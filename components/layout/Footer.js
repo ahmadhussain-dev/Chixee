@@ -2,7 +2,13 @@ import Link from "next/link";
 import Icon from "@/components/ui/Icon";
 import Logo from "@/components/ui/Logo";
 import SocialIcon, { SOCIAL_STYLE } from "@/components/ui/SocialIcon";
-import { SITE } from "@/data/site";
+import { SITE, formatTime } from "@/data/site";
+
+const SOCIALS = [
+  ["facebook", SITE.facebook, "Facebook"],
+  ["instagram", SITE.instagram, "Instagram"],
+  ["whatsapp", SITE.whatsapp, "WhatsApp"],
+];
 
 function Row({ icon, social, tile, small, children, href }) {
   const body = (
@@ -33,7 +39,7 @@ export default function Footer() {
   return (
     <footer id="site-footer" className="bg-night text-on-night">
       <div className="wrap pb-7 pt-16">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr_1.2fr] lg:gap-8">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-4">
               <Logo size={84} variant="red" />
@@ -49,13 +55,6 @@ export default function Footer() {
               <Icon name="pin" className="mt-0.5 size-5 flex-none text-yellow" />
               {SITE.branch.address}
             </address>
-            <div className="mt-5 flex gap-3" aria-label="Social media">
-              {[["facebook", SITE.facebook, "Facebook"], ["instagram", SITE.instagram, "Instagram"], ["whatsapp", SITE.whatsapp, "WhatsApp"]].map(([k, href, label]) => (
-                <a key={k} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Chixee on ${label}`} className={`grid size-11 place-items-center rounded-full transition hover:-translate-y-0.5 hover:scale-105 ${SOCIAL_STYLE[k]}`}>
-                  <SocialIcon name={k} className="size-[22px]" />
-                </a>
-              ))}
-            </div>
           </div>
           <div>
             <h2 className="mb-4 font-display text-2xl font-normal">Contact Us</h2>
@@ -73,6 +72,27 @@ export default function Footer() {
               <Row icon="bike" tile={SERVICE_TILE} small="Order Type">Delivery &amp; Pickup</Row>
               <Row icon="wallet" tile={SERVICE_TILE} small="Payment">Cash on Delivery / Bank Transfer</Row>
             </ul>
+          </div>
+          <div>
+            <h2 className="mb-4 font-display text-2xl font-normal">Our Timings</h2>
+            <dl className="grid gap-2.5 text-[15px]">
+              {SITE.hours.map((h) => (
+                <div key={h.label} className="grid gap-0.5 border-b border-white/10 pb-2.5 last:border-0">
+                  <dt>{h.label}</dt>
+                  <dd className="font-semibold tabular-nums text-yellow">{formatTime(h.opens)} - {formatTime(h.closes)}</dd>
+                </div>
+              ))}
+            </dl>
+            <h2 className="mb-3 mt-6 font-display text-2xl font-normal">Follow Us</h2>
+            <div className="flex gap-3" aria-label="Social media">
+              {SOCIALS.map(([k, href, label]) => (
+                <a key={k} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Chixee on ${label}`} className="grid size-[52px] place-items-center rounded-2xl bg-white/[.07] ring-1 ring-white/10 transition duration-300 hover:-translate-y-1 hover:bg-yellow">
+                  <span className={`grid size-9 place-items-center rounded-[10px] ${SOCIAL_STYLE[k]}`}>
+                    <SocialIcon name={k} className="size-5" />
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
         <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-white/10 pt-5 text-[13.5px] text-on-night-muted">
