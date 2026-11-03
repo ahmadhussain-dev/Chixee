@@ -5,7 +5,7 @@ import Setting from "@/models/Setting";
 import { getSession } from "@/lib/auth";
 import { ok, fail, handle } from "@/lib/api";
 import { clean, isEmail, isPhone, normalizePhone } from "@/lib/validate";
-import { ITEM_BY_ID, priceOf } from "@/data/menu";
+import { IF_UNAVAILABLE, ITEM_BY_ID, priceOf } from "@/data/menu";
 import { orderCode, publicOrder } from "@/lib/orders";
 import { SITE } from "@/data/site";
 import { publish } from "@/lib/orderEvents";
@@ -48,7 +48,9 @@ export const POST = handle(async (req) => {
     if (!item || !qty) continue;
     const size = item.sizes ? (item.sizes[raw.size] ? raw.size : Object.keys(item.sizes)[0]) : null;
     const price = priceOf(item, size);
-    lines.push({ itemId: item.id, name: item.n, size, price, qty, total: price * qty });
+    const note = clean(raw.note, 200);
+    const ifUnavailable = IF_UNAVAILABLE[raw.ifUnavailable] ? raw.ifUnavailable : "remove";
+    lines.push({ itemId: item.id, name: item.n, size, price, qty, total: price * qty, note, ifUnavailable });
   }
   if (!lines.length) return fail("Your cart is empty.");
 

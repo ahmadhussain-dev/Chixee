@@ -10,7 +10,7 @@ import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
 
 export default function CartDrawer() {
-  const { lines, subtotal, count, setQty, drawerOpen, setDrawerOpen } = useCart();
+  const { lines, subtotal, count, setLineQty, drawerOpen, setDrawerOpen } = useCart();
   const { location, setModalOpen } = useLocation();
   const router = useRouter();
   const closeRef = useRef(null);
@@ -74,8 +74,9 @@ export default function CartDrawer() {
                 <div className="min-w-0">
                   <h3 className="text-sm font-semibold leading-snug">{l.item.n}</h3>
                   <div className="text-[13px] tabular-nums text-muted">{l.size ? `${l.size} · ` : ""}{formatPKR(l.price)}</div>
+                  {l.note && <p className="truncate text-xs italic text-muted">“{l.note}”</p>}
                 </div>
-                <QtyStepper small qty={l.qty} onChange={(q) => setQty(l.id, l.size, q)} />
+                <QtyStepper small qty={l.qty} onChange={(q) => setLineQty(l.key, q)} />
               </div>
             ))
           )}

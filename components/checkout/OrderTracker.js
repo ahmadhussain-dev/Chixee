@@ -85,7 +85,7 @@ export default function OrderTracker({ code, isNew }) {
         <h2 className="mb-3 text-lg font-bold">Order summary</h2>
         <ul className="grid gap-2 text-sm">
           {order.lines.map((l, i) => (
-            <li key={i} className="flex justify-between gap-3"><span>{l.qty} × {l.name}{l.size ? ` (${l.size})` : ""}</span><span className="tabular-nums">{formatPKR(l.total)}</span></li>
+            <li key={i} className="flex justify-between gap-3"><span>{l.qty} × {l.name}{l.size ? ` (${l.size})` : ""}{l.note && <i className="block text-xs text-muted">{l.note}</i>}</span><span className="tabular-nums">{formatPKR(l.total)}</span></li>
           ))}
         </ul>
         <div className="mt-3 grid gap-1 border-t border-line pt-3 text-sm tabular-nums">

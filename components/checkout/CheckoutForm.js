@@ -29,7 +29,7 @@ function Section({ title, action, children }) {
 export default function CheckoutForm() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { lines, subtotal, count, setQty, clear, ready: cartReady } = useCart();
+  const { lines, subtotal, count, setLineQty, clear, ready: cartReady } = useCart();
   const { location, setModalOpen } = useLocation();
   const pickup = location?.type === "pickup";
   const area = !pickup ? location?.area : null;
@@ -87,7 +87,7 @@ export default function CheckoutForm() {
           instructions: form.instructions,
           paymentMethod: payment,
           transactionId: form.transactionId,
-          items: lines.map((l) => ({ id: l.id, size: l.size, qty: l.qty })),
+          items: lines.map((l) => ({ id: l.id, size: l.size, qty: l.qty, note: l.note, ifUnavailable: l.ifUnavailable })),
         }),
       });
       const data = await r.json().catch(() => ({}));
@@ -226,8 +226,9 @@ export default function CheckoutForm() {
                 <div className="min-w-0">
                   <b className="block leading-tight">{l.item.n}{l.size ? ` (${l.size})` : ""}</b>
                   <p className="line-clamp-2 text-sm text-muted">{l.item.d}</p>
+                  {l.note && <p className="mt-0.5 text-sm italic text-maroon">Note: {l.note}</p>}
                   <div className="mt-2 flex items-center justify-between gap-2">
-                    <QtyStepper small qty={l.qty} onChange={(q) => setQty(l.id, l.size, q)} />
+                    <QtyStepper small qty={l.qty} onChange={(q) => setLineQty(l.key, q)} />
                     <b className="tabular-nums">{formatPKR(l.total)}</b>
                   </div>
                 </div>

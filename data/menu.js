@@ -3,6 +3,9 @@
 // Items with an empty `img` (or none) show a branded yellow tile instead.
 // The server recalculates every order total from this file, so prices can't be changed from the browser.
 
+// NOTE: soft drink flavours follow the drink photos; confirm with the owner which ones are stocked.
+const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
+
 export const MENU = [
   { id: "broast", name: "Broast", script: "Authentic", glyph: "drum", note: "Leg, thigh, wing and chest pieces, injected and pressure fried.", items: [
     { n: "Quarter Broast", d: "2 Pc chicken (leg & thigh), French fries, bun, 1 reg garlic", p: 750, img: "/images/menu-cut/quarter-broast.webp" },
@@ -21,15 +24,15 @@ export const MENU = [
     { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "" },
   ]},
   { id: "burgers", name: "Burgers & Slices", script: "Stacked", glyph: "burger", items: [
-    { n: "Majestic Double", d: "Double beef patty burger", p: 750, tag: "Beef", img: "/images/menu-cut/majestic-burger.webp", popular: true },
-    { n: "Chixinger Burger", d: "Crispy fried chicken fillet burger", p: 480, img: "/images/menu-cut/chixinger-burger.webp", popular: true },
-    { n: "Creamy Wrap", d: "Grilled chicken wrapped with creamy sauce", p: 580, img: "/images/menu-cut/creamy-wrap.webp" },
-    { n: "Chipotle Wrap", d: "Grilled chicken wrapped with smoky chipotle", p: 580, img: "/images/menu-cut/chipotle-wrap.webp" },
-    { n: "Club Sandwich", d: "Toasted triple-layer chicken club", p: 450, img: "/images/menu-cut/club-sandwich.webp" },
-    { n: "ChixDoner with Cheese", d: "Chixee doner with melted cheese", p: 380, img: "/images/menu-cut/chixdoner-with-cheese.webp" },
-    { n: "ChixDoner without Cheese", d: "Chixee doner, classic", p: 320 },
-    { n: "Quesadilla", d: "Grilled tortilla with chicken and cheese", p: 550, img: "/images/menu-cut/quesadilla.webp" },
-    { n: "Schnitzel", d: "Golden crumbed chicken schnitzel", p: 450, img: "" },
+    { n: "Majestic Double", meal: true, d: "Double beef patty burger", p: 750, tag: "Beef", img: "/images/menu-cut/majestic-burger.webp", popular: true },
+    { n: "Chixinger Burger", meal: true, d: "Crispy fried chicken fillet burger", p: 480, img: "/images/menu-cut/chixinger-burger.webp", popular: true },
+    { n: "Creamy Wrap", meal: true, d: "Grilled chicken wrapped with creamy sauce", p: 580, img: "/images/menu-cut/creamy-wrap.webp" },
+    { n: "Chipotle Wrap", meal: true, d: "Grilled chicken wrapped with smoky chipotle", p: 580, img: "/images/menu-cut/chipotle-wrap.webp" },
+    { n: "Club Sandwich", meal: true, d: "Toasted triple-layer chicken club", p: 450, img: "/images/menu-cut/club-sandwich.webp" },
+    { n: "ChixDoner with Cheese", meal: true, d: "Chixee doner with melted cheese", p: 380, img: "/images/menu-cut/chixdoner-with-cheese.webp" },
+    { n: "ChixDoner without Cheese", meal: true, d: "Chixee doner, classic", p: 320 },
+    { n: "Quesadilla", meal: true, d: "Grilled tortilla with chicken and cheese", p: 550, img: "/images/menu-cut/quesadilla.webp" },
+    { n: "Schnitzel", meal: true, d: "Golden crumbed chicken schnitzel", p: 450, img: "" },
     { n: "French Fries (Regular)", d: "Crispy salted fries", p: 220, glyph: "fries" },
   ]},
   { id: "chai", name: "Chaialogy", script: "It’s science", glyph: "cup", note: "Chai isn’t just a drink, it’s science.", items: [
@@ -52,10 +55,9 @@ export const MENU = [
     { n: "Blue Lagoon Mocktail", d: "Blue curaçao mocktail with lemon", p: 260, img: "/images/menu-cut/blue-lagoon-mocktail.webp" },
     { n: "Lemonade", d: "Fresh squeezed lemonade", p: 220, img: "/images/menu-cut/lemonade.webp" },
     { n: "Diet Zeera Masala", d: "Spiced cumin soda", p: 280 },
-    { n: "Regular Drink", d: "Soft drink, regular", p: 100, img: "/images/menu-cut/regular-drink.webp" },
-    { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, img: "/images/menu-cut/drink-500-ml.webp" },
-    { n: "Drinking Water (½ Litre)", d: "Mineral water", p: 70, img: "/images/menu-cut/drinking-water-1-5-litre.webp" },
-    { n: "Drinking Water (1.5 Litre)", d: "Mineral water", p: 160, img: "/images/menu-cut/drinking-water-1-5-litre.webp" },
+    { n: "Regular Drink", d: "Soft drink, regular", p: 100, flavours: SOFT_DRINKS, img: "/images/menu-cut/regular-drink.webp" },
+    { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, flavours: SOFT_DRINKS, img: "/images/menu-cut/drink-500-ml.webp" },
+    { n: "Drinking Water", d: "Mineral water", sizes: { "½ Litre": 70, "1.5 Litre": 160 }, img: "/images/menu-cut/drinking-water-1-5-litre.webp" },
   ]},
   { id: "addons", name: "Add-ons", script: "Make it yours", glyph: "plus", items: [
     { n: "Cheese Slice", d: "Add to any burger or doner", p: 70, img: "/images/menu-cut/cheese-slice.webp" },
@@ -67,9 +69,27 @@ export const MENU = [
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 // Flatten with stable ids, e.g. "broast-half-broast"
+// Meal upgrades for burgers, wraps and sandwiches are priced from the menu's own fries and regular drink.
+const FRIES_PRICE = 220;
+const DRINK_PRICE = 100;
+
+// Every choice an item offers becomes a "size" (name -> price), so the cart, checkout and server
+// all price variations the same way.
+function variationsOf(it) {
+  if (it.sizes) return { sizes: it.sizes, variationLabel: "Choose a size" };
+  if (it.meal)
+    return {
+      sizes: { "On its own": it.p, "With regular fries": it.p + FRIES_PRICE, "With fries & regular drink": it.p + FRIES_PRICE + DRINK_PRICE },
+      variationLabel: "Make it a meal",
+    };
+  if (it.flavours) return { sizes: Object.fromEntries(it.flavours.map((f) => [f, it.p])), variationLabel: "Choose a flavour" };
+  return {};
+}
+
 export const ITEMS = MENU.flatMap((c) =>
   c.items.map((it) => ({
     ...it,
+    ...variationsOf(it),
     id: `${c.id}-${slug(it.n)}`,
     category: c.id,
     categoryName: c.name,
@@ -84,8 +104,32 @@ export const priceOf = (item, size) =>
 
 export const defaultSize = (item) => (item.sizes ? Object.keys(item.sizes)[0] : null);
 
+// Lowest price an item can be ordered at ("from Rs. …" on the menu card).
+export const fromPrice = (item) => (item.sizes ? Math.min(...Object.values(item.sizes)) : item.p);
+
+// "Frequently bought together" suggestions per category (item ids, optionally with a fixed variation).
+const FBT = {
+  broast: ["drinks-regular-drink", "drinks-drink-500-ml", "addons-garlic-sauce", "addons-spicy-garlic", "desserts-extra-bun", "burgers-french-fries-regular", "desserts-fudge-brownie"],
+  fish: ["drinks-regular-drink", "drinks-drink-500-ml", "addons-garlic-sauce", "addons-spicy-garlic", "drinks-lemonade", "desserts-fudge-brownie"],
+  pizza: ["drinks-drink-500-ml", "drinks-regular-drink", "addons-garlic-sauce", "addons-spicy-garlic", "burgers-french-fries-regular", "desserts-chocolate-cookies"],
+  burgers: ["drinks-regular-drink", "burgers-french-fries-regular", "addons-cheese-slice", "addons-garlic-sauce", "addons-spicy-garlic", "drinks-mint-margarita", "desserts-fudge-brownie"],
+  chai: ["desserts-chocolate-cookies", "desserts-vanilla-cookies", "desserts-fudge-brownie", "desserts-lotus-slice", "desserts-caramel-slice"],
+  desserts: ["chai-chaialogy-special", "chai-karak-chai", "drinks-lemonade", "drinks-mint-margarita"],
+  drinks: ["burgers-french-fries-regular", "desserts-fudge-brownie", "desserts-chocolate-cookies"],
+  addons: ["burgers-french-fries-regular", "drinks-regular-drink"],
+};
+export const frequentlyBoughtWith = (item) =>
+  (FBT[item.category] || []).filter((id) => id !== item.id && ITEM_BY_ID[id]).map((id) => ITEM_BY_ID[id]);
+
 export const imgSrc = (item) => item.img || null; // e.g. "/images/menu-cut/half-broast.webp"
 
 export const POPULAR = ITEMS.filter((i) => i.popular);
 
 export const formatPKR = (n) => "Rs. " + Number(n || 0).toLocaleString("en-PK");
+
+// What to do if an item is out of stock (chosen in the item popup, shown to the admin).
+export const IF_UNAVAILABLE = {
+  remove: "Remove it from my order",
+  call: "Call me to discuss",
+  cancel: "Cancel the entire order",
+};

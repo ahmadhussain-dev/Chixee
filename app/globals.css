@@ -67,6 +67,10 @@
 .group:hover .tile-bg::before { transform: rotate(30deg); }
 .tile-text { text-shadow: 0 2px 0 var(--color-maroon), 0 4px 10px rgba(107,13,17,.35); }
 
+@keyframes fade { from { opacity: 0; } }
+@keyframes sheet { from { transform: translateY(100%); } }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 

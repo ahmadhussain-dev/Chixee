@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useEventStream from "@/hooks/useEventStream";
 import { useToast } from "@/context/ToastContext";
 import Icon from "@/components/ui/Icon";
-import { formatPKR } from "@/data/menu";
+import { IF_UNAVAILABLE, formatPKR } from "@/data/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
 
 const FILTERS = [["active", "Active"], ["pending", "Pending"], ["preparing", "Preparing"], ["dispatched", "Dispatched"], ["delivered", "Delivered"], ["cancelled", "Cancelled"], ["all", "All"]];
@@ -77,7 +77,13 @@ function OrderCard({ order, onChange }) {
         <div>
           <h3 className="mb-1 font-semibold text-muted">Items</h3>
           <ul className="grid gap-0.5">
-            {order.lines.map((l, i) => <li key={i}>{l.qty} × {l.name}{l.size ? ` (${l.size})` : ""}</li>)}
+            {order.lines.map((l, i) => (
+              <li key={i}>
+                {l.qty} × {l.name}{l.size ? ` (${l.size})` : ""}
+                {l.note && <span className="block pl-4 text-xs italic text-maroon">Note: {l.note}</span>}
+                {l.ifUnavailable && l.ifUnavailable !== "remove" && <span className="block pl-4 text-xs text-muted">If unavailable: {IF_UNAVAILABLE[l.ifUnavailable]}</span>}
+              </li>
+            ))}
           </ul>
           {order.instructions && <p className="mt-2 rounded-lg bg-yellow-soft p-2"><b>Note:</b> {order.instructions}</p>}
         </div>

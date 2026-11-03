@@ -10,6 +10,8 @@ const LineSchema = new Schema(
     price: Number,
     qty: Number,
     total: Number,
+    note: String, // special instructions for this item
+    ifUnavailable: String, // remove | call | cancel
   },
   { _id: false }
 );
