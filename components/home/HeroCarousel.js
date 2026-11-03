@@ -14,6 +14,7 @@ const SLIDES = [
     text: "Pressure-fried broast, marinated to the bone and served hot with fries, buns and our garlic dips.",
     ctas: [{ href: "#broast", label: "Order Broast", primary: true }, { href: "#menu", label: "See full menu" }],
     img: IMAGES.heroBroast,
+    pos: "center 30%",
     alt: "Diner holding up a crispy piece of Chixee broast over a tray of broast, fries, buns and dips",
     glyph: "drum",
   },
@@ -23,6 +24,7 @@ const SLIDES = [
     text: "A delicate freshwater fish with a mild, buttery flavour, crumbed and fried golden with fries, bun and dips.",
     ctas: [{ href: "#fish", label: "Order fish", primary: true }],
     img: IMAGES.heroFish,
+    pos: "center 40%",
     alt: "Diner biting into flaky fried Saul fish with fries, bun and dips on the table",
     glyph: "drum",
   },
@@ -85,7 +87,7 @@ export default function HeroCarousel() {
               </div>
               <div className="absolute inset-0 overflow-hidden md:relative">
                 {s.img ? (
-                  <Image src={s.img} alt={s.alt} fill priority={i === 0} sizes="(max-width: 768px) 100vw, 50vw" className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-[1.12]"}`} />
+                  <Image src={s.img} alt={s.alt} fill priority={i === 0} sizes="(max-width: 768px) 100vw, 50vw" style={{ objectPosition: s.pos }} className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-[1.12]"}`} />
                 ) : (
                   // Placeholder until a banner image is set in data/images.js
                   <div className="tile-bg absolute inset-0 grid place-items-center overflow-hidden" aria-label={s.alt} role="img">

@@ -11,7 +11,7 @@ function ModeToggle() {
   const { location, setType } = useLocation();
   const mode = location?.type || "delivery";
   return (
-    <div role="group" aria-label="Order type" className="relative order-4 flex w-full rounded-full bg-white p-[5px] shadow-[inset_0_0_0_1px_rgba(107,13,17,.08)] md:order-none md:w-auto">
+    <div role="group" aria-label="Order type" className="relative order-4 flex w-full rounded-full bg-white p-[5px] shadow-[inset_0_0_0_1px_rgba(107,13,17,.08)] lg:order-none lg:w-auto">
       <span
         aria-hidden="true"
         className={`absolute inset-y-[5px] left-[5px] w-[calc(50%-5px)] rounded-full bg-maroon shadow-[0_6px_14px_rgba(163,22,27,.3)] transition-transform duration-500 ease-brand ${mode === "pickup" ? "translate-x-full" : ""}`}
@@ -25,7 +25,7 @@ function ModeToggle() {
           type="button"
           aria-pressed={mode === key}
           onClick={() => setType(key)}
-          className={`relative z-[1] flex flex-1 items-center justify-center gap-2 rounded-full px-5 py-2 font-semibold transition-colors md:flex-none ${mode === key ? "text-white" : "text-maroon"}`}
+          className={`relative z-[1] flex flex-1 items-center justify-center gap-2 rounded-full px-5 py-2 font-semibold transition-colors lg:flex-none ${mode === key ? "text-white" : "text-maroon"}`}
         >
           <Icon name={icon} />
           {label}
@@ -100,9 +100,9 @@ function UserMenu() {
 export default function Header() {
   return (
     <header className="relative z-50 bg-yellow">
-      <div className="wrap flex flex-wrap items-center gap-3 py-3 md:min-h-[92px] md:flex-nowrap md:gap-5">
+      <div className="wrap flex flex-wrap items-center gap-3 py-3 lg:min-h-[92px] lg:flex-nowrap lg:gap-5">
         <Link href="/" className="group mr-auto flex items-center gap-3 text-maroon" aria-label="Chixee home">
-          <Logo size={60} className="shadow-[0_6px_18px_rgba(107,13,17,.18)] transition-transform duration-700 ease-brand group-hover:-rotate-12 group-hover:scale-105" />
+          <Logo size={60} priority className="shadow-[0_6px_18px_rgba(107,13,17,.18)] transition-transform duration-700 ease-brand group-hover:-rotate-12 group-hover:scale-105" />
           <span>
             <b className="block font-display text-2xl leading-none tracking-wide md:text-[28px]">CHIXEE</b>
             <small className="hidden font-script text-[19px] leading-none text-maroon-dark sm:block">{SITE.tagline}</small>

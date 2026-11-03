@@ -1,9 +1,8 @@
-// Site images. Leave a path empty ("") to show a branded placeholder.
-// Put files in /public/images/ and set the path like "/images/logo.jpg".
+// Site images in /public/images. Leave a path empty ("") to show a branded placeholder.
 export const IMAGES = {
-  logo: "", // round logo used in header, footer, popups
-  heroBroast: "", // hero slide 1 (Chemistry Broast banner)
-  heroFish: "", // hero slide 2 (Indus River fish banner)
-  storefront: "", // "Visit Chixee" section photo
+  logo: "/images/chixee logo.jpg", // round logo used in header, footer, popups
+  heroBroast: "/images/banner model2.jpg", // hero slide 1 (Chemistry in every bite)
+  heroFish: "/images/banner1.jpg", // hero slide 2 (Indus River Saul fish)
+  storefront: "/images/restaurent front image.jpg", // "Visit Chixee" section photo
   ogImage: "", // 1200x630 social share image
 };
