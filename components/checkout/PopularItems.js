@@ -27,7 +27,6 @@ export default function PopularItems() {
           return (
             <div key={item.id} className="group relative flex w-[85%] flex-none snap-start gap-3 rounded-2xl border border-line bg-white p-3 sm:w-[300px]">
               <div className="relative size-24 flex-none overflow-hidden rounded-xl bg-yellow">
-                {item.tag && <span className="absolute bottom-1.5 left-1.5 z-[2] rounded-full bg-maroon px-2 py-0.5 text-[10px] font-bold uppercase text-white">{item.tag}</span>}
                 <ItemThumb item={item} small sizes="96px" />
               </div>
               <div className="flex min-w-0 flex-col gap-1">
