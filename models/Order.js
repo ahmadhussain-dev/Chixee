@@ -48,4 +48,6 @@ const OrderSchema = new Schema(
   { timestamps: true }
 );
 
+OrderSchema.index({ updatedAt: 1 });
+
 export default mongoose.models.Order || mongoose.model("Order", OrderSchema);

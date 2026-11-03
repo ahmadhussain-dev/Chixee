@@ -34,7 +34,7 @@ export default function PopularItems() {
                 <b className="text-[15px] leading-tight">{item.n}</b>
                 <p className="line-clamp-2 text-xs uppercase text-muted">{item.d}</p>
                 <button type="button" onClick={() => { add(item.id, size); toast(`${item.n} added to cart`); }}
-                  className="mt-auto w-fit rounded-lg bg-yellow px-3 py-1.5 text-sm font-bold text-maroon-dark transition hover:bg-[#ffcb2e]">
+                  className="mt-auto w-fit rounded-lg bg-maroon px-3 py-1.5 text-sm font-bold text-white transition hover:bg-maroon-dark">
                   {formatPKR(priceOf(item, size))} <span aria-hidden="true">+</span><span className="sr-only">Add to cart</span>
                 </button>
               </div>

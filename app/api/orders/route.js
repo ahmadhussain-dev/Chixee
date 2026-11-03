@@ -8,6 +8,7 @@ import { clean, isEmail, isPhone, normalizePhone } from "@/lib/validate";
 import { ITEM_BY_ID, priceOf } from "@/data/menu";
 import { orderCode, publicOrder } from "@/lib/orders";
 import { SITE } from "@/data/site";
+import { publish } from "@/lib/orderEvents";
 
 export const dynamic = "force-dynamic";
 
@@ -90,5 +91,6 @@ export const POST = handle(async (req) => {
       if (e.code !== 11000) throw e; // retry only on duplicate code
     }
   }
+  publish(order.toObject());
   return ok(publicOrder(order), { status: 201 });
 });

@@ -13,10 +13,11 @@ export const MENU = [
     { n: "Fish n Chips (Half)", d: "River Saul fish with fries, bun and dip sauces", p: 2500, img: "/images/menu/fish n chips half.jpg", popular: true },
     { n: "Fish n Chips (Full)", d: "River Saul fish with fries, bun and dip sauces", p: 4800, tag: "Share", img: "/images/menu/fish n chips full.jpg" },
   ]},
+  // NOTE: Small pizza prices are placeholders until the owner confirms them.
   { id: "pizza", name: "Pizza", script: "Middle Eastern herb", glyph: "pizza", note: "Every pizza comes with our special Middle Eastern herb.", items: [
-    { n: "Chixie Special Full Loaded", d: "Special Middle Eastern herb", sizes: { Regular: 1450, Large: 2100 }, img: "", tag: "Signature", popular: true },
-    { n: "Crown Crust", d: "Special Middle Eastern herb", sizes: { Regular: 1200, Large: 1800 }, img: "/images/menu/crown crust.jpg" },
-    { n: "Peri Peri", d: "Special Middle Eastern herb", sizes: { Regular: 1200, Large: 1800 }, img: "/images/menu/peri peri pizza.jpg" },
+    { n: "Chixie Special Full Loaded", d: "Special Middle Eastern herb", sizes: { Small: 950, Regular: 1450, Large: 2100 }, img: "", tag: "Signature", popular: true },
+    { n: "Crown Crust", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu/crown crust.jpg" },
+    { n: "Peri Peri", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu/peri peri pizza.jpg" },
     { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "" },
   ]},
   { id: "burgers", name: "Burgers & Slices", script: "Stacked", glyph: "burger", items: [

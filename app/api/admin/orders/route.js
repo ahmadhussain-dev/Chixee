@@ -2,6 +2,7 @@ import { dbConnect } from "@/lib/db";
 import Order from "@/models/Order";
 import { requireAdmin } from "@/lib/auth";
 import { ok, fail, handle } from "@/lib/api";
+import { adminOrder } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -15,5 +16,5 @@ export const GET = handle(async (req) => {
   }
   await dbConnect();
   const orders = await Order.find(q).sort({ createdAt: -1 }).limit(200).lean();
-  return ok(orders.map((o) => ({ ...o, _id: o._id.toString(), user: o.user?.toString() || null })));
+  return ok(orders.map(adminOrder));
 });

@@ -33,8 +33,9 @@ export const viewport = { themeColor: "#FFC20E", width: "device-width", initialS
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${lilita.variable} ${poppins.variable} ${caveat.variable}`}>
-      <body>
+    <html lang="en" className={`${lilita.variable} ${poppins.variable} ${caveat.variable}`} suppressHydrationWarning>
+      {/* suppressHydrationWarning: browser extensions (Grammarly, translators, dark mode…) add attributes to <html>/<body> before React loads */}
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
