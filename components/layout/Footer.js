@@ -26,8 +26,8 @@ export default function Footer() {
   return (
     <footer className="bg-night text-on-night">
       <div className="wrap pb-7 pt-16">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+          <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-4">
               <Logo size={84} />
               <div>

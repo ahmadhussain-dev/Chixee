@@ -115,7 +115,7 @@ export default function CheckoutForm() {
     <form onSubmit={(e) => { e.preventDefault(); placeOrder(); }} className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
       {/* Left: customer details */}
       <div className="grid min-w-0 grid-cols-1 gap-5 rounded-3xl bg-white p-5 shadow-[0_0_0_1px_var(--color-line)] sm:p-7">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <label className="label text-base font-medium">Full Name<input required value={form.name} onChange={set("name")} autoComplete="name" placeholder="Enter your name" className="input" /></label>
           <div className="label text-base font-medium">
             <label htmlFor="phone">Mobile Number</label>
