@@ -9,6 +9,8 @@ export const SITE = {
   phone: "0304 4471 111",
   phoneIntl: "+923044471111",
   facebook: "https://www.facebook.com/chixee",
+  instagram: "https://www.instagram.com/chixee", // TODO: confirm the real Instagram handle
+  whatsapp: "https://wa.me/923044471111",
   company: "Ahad Baig Food & Beverages",
   city: "Faisalabad",
   branch: {

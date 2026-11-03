@@ -49,7 +49,7 @@ function LocationChip() {
       <Icon name="pin" className="size-6 flex-none" />
       <span className="min-w-0 leading-tight">
         <small className="block text-[11px] font-semibold uppercase tracking-wide text-maroon-dark/70">
-          {location?.type === "pickup" ? "Pick up from" : "Deliver to"}
+          Your location
         </small>
         <b className="block truncate text-sm">{label}</b>
       </span>

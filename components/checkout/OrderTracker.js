@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import useEventStream from "@/hooks/useEventStream";
 import Icon from "@/components/ui/Icon";
 import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
@@ -12,19 +13,21 @@ export default function OrderTracker({ code, isNew }) {
   const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    let stop = false;
-    const load = async () => {
-      const r = await fetch(`/api/orders/${code}`, { cache: "no-store" });
-      const data = await r.json().catch(() => ({}));
-      if (stop) return;
-      if (!r.ok) setError(data.error || "Order not found.");
-      else setOrder(data);
-    };
-    load();
-    const t = setInterval(load, 15000); // refresh status every 15 seconds
-    return () => { stop = true; clearInterval(t); };
+  const load = useCallback(async () => {
+    const r = await fetch(`/api/orders/${code}`, { cache: "no-store" });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) setError(data.error || "Order not found.");
+    else setOrder(data);
   }, [code]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- load() only sets state after the fetch resolves
+    load();
+  }, [load]);
+
+  // Live updates pushed from the server; stops listening once the order is finished.
+  const finished = order && ["delivered", "cancelled"].includes(order.status);
+  useEventStream(order && !finished ? `/api/orders/${code}/stream` : null, { onOrder: setOrder, onOpen: (reconnect) => reconnect && load() });
 
   if (error) return <div className="card mx-auto max-w-md p-8 text-center"><h1 className="heading text-3xl">Order not found</h1><p className="mt-2 text-muted">Check the order number and try again.</p><Link href="/track" className="btn-yellow mt-5">Track another order</Link></div>;
   if (!order) return <div className="card mx-auto h-80 max-w-2xl animate-pulse" />;

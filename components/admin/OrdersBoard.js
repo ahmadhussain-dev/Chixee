@@ -1,5 +1,7 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import useEventStream from "@/hooks/useEventStream";
+import { useToast } from "@/context/ToastContext";
 import Icon from "@/components/ui/Icon";
 import { formatPKR } from "@/data/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
@@ -113,24 +115,71 @@ function OrderCard({ order, onChange }) {
   );
 }
 
+const ACTIVE = ["pending", "accepted", "preparing", "ready", "dispatched"];
+const matches = (filter, o) => filter === "all" || (filter === "active" ? ACTIVE.includes(o.status) : o.status === filter);
+
+// Short two-tone chime for new orders (no audio file needed).
+function chime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [880, 1320].forEach((f, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.18);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.3);
+      o.connect(g).connect(ctx.destination);
+      o.start(ctx.currentTime + i * 0.18);
+      o.stop(ctx.currentTime + i * 0.18 + 0.32);
+    });
+  } catch {}
+}
+
 export default function OrdersBoard() {
   const [filter, setFilter] = useState("active");
   const [orders, setOrders] = useState(null);
   const [error, setError] = useState("");
+  const [live, setLive] = useState(false);
+  const known = useRef(new Set());
+  const toast = useToast();
 
   const load = useCallback(async () => {
     const r = await fetch(`/api/admin/orders?status=${filter}`, { cache: "no-store" });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) setError(data.error || "Couldn't load orders");
-    else { setError(""); setOrders(data); }
+    else {
+      setError("");
+      setOrders(data);
+      data.forEach((o) => known.current.add(o.code));
+    }
   }, [filter]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- load() only sets state after the fetch resolves
     load();
-    const t = setInterval(load, 15000); // new orders show up within 15 seconds
-    return () => clearInterval(t);
   }, [load]);
+
+  // New and changed orders are pushed by the server, so there is no polling and no page refresh.
+  useEventStream("/api/admin/orders/stream", {
+    onOpen: (reconnect) => { setLive(true); if (reconnect) load(); },
+    onError: () => setLive(false),
+    onOrder: (o) => {
+      setLive(true);
+      const isNew = !known.current.has(o.code);
+      known.current.add(o.code);
+      if (isNew && o.status === "pending") {
+        chime();
+        toast(`New order ${o.code} · ${o.customer?.name}`);
+      }
+      setOrders((list) => {
+        if (!list) return list;
+        const rest = list.filter((x) => x.code !== o.code);
+        if (!matches(filter, o)) return rest;
+        const exists = rest.length !== list.length;
+        return exists ? list.map((x) => (x.code === o.code ? o : x)) : [o, ...list];
+      });
+    },
+  });
 
   const pending = orders?.filter((o) => o.status === "pending").length || 0;
   const update = (o) => setOrders((list) => list.map((x) => (x.code === o.code ? o : x)));
@@ -139,7 +188,10 @@ export default function OrdersBoard() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h1 className="heading text-4xl">Orders</h1>
-        {pending > 0 && <span className="animate-pulse rounded-full bg-maroon px-3 py-1 text-sm font-bold text-white">{pending} waiting to accept</span>}
+        <div className="flex items-center gap-3">
+          {pending > 0 && <span className="animate-pulse rounded-full bg-maroon px-3 py-1 text-sm font-bold text-white">{pending} waiting to accept</span>}
+          <span className="flex items-center gap-1.5 text-sm text-muted"><span className={`size-2.5 rounded-full ${live ? "bg-green-500" : "bg-line"}`} />{live ? "Live" : "Connecting…"}</span>
+        </div>
       </div>
       <div className="no-scrollbar mb-5 flex gap-2 overflow-x-auto">
         {FILTERS.map(([k, label]) => (

@@ -3,6 +3,8 @@ import Order, { ORDER_STATUSES } from "@/models/Order";
 import { requireAdmin } from "@/lib/auth";
 import { ok, fail, handle } from "@/lib/api";
 import { clean, isPhone, normalizePhone } from "@/lib/validate";
+import { publish } from "@/lib/orderEvents";
+import { adminOrder } from "@/lib/orders";
 
 // Allowed next steps for each status
 const NEXT = {
@@ -43,5 +45,6 @@ export const PATCH = handle(async (req, { params }) => {
 
   await order.save();
   const o = order.toObject();
-  return ok({ ...o, _id: o._id.toString(), user: o.user?.toString() || null });
+  publish(o);
+  return ok(adminOrder(o));
 });
