@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  --color-yellow: #ffc20e;
+  --color-yellow-deep: #f2ae00;
+  --color-yellow-soft: #fff4d1;
+  --color-maroon: #a3161b;
+  --color-maroon-dark: #6b0d11;
+  --color-ink: #22140f;
+  --color-muted: #7a6a62;
+  --color-cream: #fbf8f3;
+  --color-line: #efe6da;
+  --color-night: #1c110d;
+  --color-night-2: #2a1a14;
+  --color-on-night: #f5ece4;
+  --color-on-night-muted: #b7a79c;
+
+  --font-display: var(--font-lilita), "Arial Black", Impact, sans-serif;
+  --font-body: var(--font-poppins), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-script: var(--font-caveat), "Comic Sans MS", cursive;
+
+  --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-pop: pop 0.35s var(--ease-brand);
+  --animate-slidein: slidein 0.4s var(--ease-brand);
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-bump: bump 0.5s var(--ease-brand);
+  --animate-fill: fill 6s linear forwards;
+  --animate-fade-up: fade-up 0.6s var(--ease-brand) both;
+
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes slidein { from { transform: translateX(30px); opacity: 0; } }
+  @keyframes float { 50% { transform: translateY(-8px); } }
+  @keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.45); } 100% { transform: scale(1); } }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes fade-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; overflow-x: clip; }
+  body {
+    @apply bg-cream text-ink font-body antialiased overflow-x-clip;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--color-maroon); outline-offset: 3px; border-radius: 8px; }
+}
+
+@utility wrap { @apply mx-auto w-full max-w-[1240px] px-4; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-bold transition duration-200 ease-brand disabled:pointer-events-none disabled:opacity-45; }
+@utility btn-yellow { @apply btn bg-yellow text-maroon-dark shadow-[0_8px_22px_rgba(255,194,14,.35)] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(255,194,14,.45)]; }
+@utility btn-maroon { @apply btn bg-maroon text-white hover:-translate-y-0.5 hover:bg-maroon-dark; }
+@utility btn-outline { @apply btn border-2 border-maroon text-maroon hover:bg-maroon hover:text-white; }
+@utility input { @apply w-full rounded-xl border-[1.5px] border-line bg-white px-3.5 py-3 text-ink outline-none transition placeholder:text-[#a99a90] focus:border-yellow focus:shadow-[0_0_0_3px_rgba(255,194,14,.25)]; }
+@utility label { @apply grid min-w-0 grid-cols-1 content-start gap-1.5 text-[13px] font-semibold; }
+@utility card { @apply rounded-[18px] bg-white shadow-[0_0_0_1px_var(--color-line)]; }
+@utility heading { @apply font-display font-normal leading-none tracking-[.3px]; }
+@utility eyebrow { @apply font-script leading-none; }
+
+/* Tile background for items without a photo */
+.tile-bg { background: radial-gradient(circle at 30% 20%, #ffd95a 0%, var(--color-yellow) 45%, var(--color-yellow-deep) 100%); }
+.tile-bg::before { content: ""; position: absolute; inset: -40%; background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.14) 0 8deg, transparent 8deg 22deg); transition: transform 1.2s var(--ease-brand); }
+.group:hover .tile-bg::before { transform: rotate(30deg); }
+.tile-text { text-shadow: 0 2px 0 var(--color-maroon), 0 4px 10px rgba(107,13,17,.35); }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
