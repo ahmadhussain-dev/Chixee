@@ -40,7 +40,7 @@ export const MENU = [
   { id: "chai", name: "Chaialogy", script: "It’s science", glyph: "cup", note: "Chai isn’t just a drink, it’s science.", items: [
     { n: "Chaialogy Special", d: "Our signature house chai", p: 180, tag: "House", img: "/images/menu-cut/chaialogy-special-chai.webp", popular: true },
     { n: "Karak Chai", d: "Strong, slow-brewed karak", p: 150, img: "/images/menu-cut/karak-chai.webp" },
-    { n: "Doodh Patti", d: "Milk-brewed, rich and creamy", p: 150 , img: "/images/menu/doodhpati.jpg"},
+    { n: "Doodh Patti", d: "Milk-brewed, rich and creamy", p: 150 , img: "/images/menu-cut/doodh-patti.webp"},
     { n: "Chocolate Chai", d: "Chai with a chocolate finish", p: 180, img: "/images/menu-cut/chocolate-chai.webp" },
     { n: "Adrak Chai", d: "Ginger-spiced chai", p: 180, img: "/images/menu-cut/adrak-chai.webp" },
   ]},
@@ -56,7 +56,7 @@ export const MENU = [
     { n: "Mint Margarita", d: "Fresh mint and lemon, blended icy", p: 280, img: "/images/menu-cut/mint-margarita.webp" },
     { n: "Blue Lagoon Mocktail", d: "Blue curaçao mocktail with lemon", p: 260, img: "/images/menu-cut/blue-lagoon-mocktail.webp" },
     { n: "Lemonade", d: "Fresh squeezed lemonade", p: 220, img: "/images/menu-cut/lemonade.webp" },
-    { n: "Diet Sprite 500ml", d: "Spiced cumin soda", p: 280, img: "/images/menu/dietsprite500ml.jpg" },
+    { n: "Diet Sprite 500ml", d: "Sugar-free Sprite, 500 ml bottle", p: 280, img: "/images/menu-cut/diet-sprite-500-ml.webp" },
     { n: "Regular Drink", d: "Soft drink, regular", p: 100, flavours: SOFT_DRINKS, img: "/images/menu-cut/regular-drink.webp" },
     { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, flavours: SOFT_DRINKS, img: "/images/menu-cut/drink-500-ml.webp" },
     { n: "Drinking Water", d: "Mineral water", sizes: { "½ Litre": 70, "1.5 Litre": 160 }, img: "/images/menu-cut/drinking-water-1-5-litre.webp" },
