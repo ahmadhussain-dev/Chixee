@@ -2,10 +2,10 @@ import { SITE } from "@/data/site";
 
 export default function sitemap() {
   const now = new Date();
-  return ["", "/about", "/contact", "/track", "/login", "/signup"].map((p) => ({
+  return ["", "/deals", "/about", "/contact", "/track", "/login", "/signup"].map((p) => ({
     url: `${SITE.url}${p}`,
     lastModified: now,
     changeFrequency: p === "" ? "weekly" : "monthly",
-    priority: p === "" ? 1 : 0.5,
+    priority: p === "" ? 1 : p === "/deals" ? 0.9 : 0.5,
   }));
 }

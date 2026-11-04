@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icon, { Glyph } from "@/components/ui/Icon";
 import MenuItemCard from "@/components/menu/MenuItemCard";
@@ -136,6 +137,13 @@ export default function MenuBrowser() {
                 <span className="whitespace-nowrap">{c.short || c.name}</span>
               </button>
             ))}
+            <Link
+              href="/deals"
+              className="group/tab flex min-w-[78px] flex-none flex-col items-center gap-1 rounded-2xl bg-red px-3 py-2 text-[12px] font-semibold leading-tight text-white shadow-[0_6px_16px_rgba(227,38,45,.3)] transition duration-300 ease-brand hover:-translate-y-0.5 sm:min-w-[96px] sm:px-4 sm:text-[13.5px]"
+            >
+              <Glyph name="tag" className="size-[22px] transition-transform duration-300 group-hover/tab:scale-110 sm:size-6" />
+              <span className="whitespace-nowrap">Deals</span>
+            </Link>
           </div>
         </div>
       </nav>

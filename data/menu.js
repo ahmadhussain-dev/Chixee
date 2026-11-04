@@ -4,6 +4,8 @@
 // The server recalculates every order total from this file, so prices can't be changed from the browser.
 
 // NOTE: soft drink flavours follow the drink photos; confirm with the owner which ones are stocked.
+import { DEAL_GROUPS, DEAL_SPECS } from "@/data/deals";
+
 const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
 
 export const MENU = [
@@ -97,10 +99,32 @@ export const ITEMS = MENU.flatMap((c) =>
   }))
 );
 
-export const ITEM_BY_ID = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
+const MENU_BY_ID = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
 
 export const priceOf = (item, size) =>
   item.sizes ? item.sizes[size] ?? Object.values(item.sizes)[0] : item.p;
+
+// Deals (data/deals.js) become orderable items too, with their contents and the menu total they save on.
+export { DEAL_GROUPS };
+export const DEALS = DEAL_SPECS.map((d) => {
+  const parts = d.parts
+    .map(([id, qty, size]) => ({ item: MENU_BY_ID[id], qty, size }))
+    .filter((x) => x.item);
+  const was = parts.reduce((s, x) => s + priceOf(x.item, x.size) * x.qty, 0);
+  return {
+    ...d,
+    id: `deals-${slug(d.n)}`,
+    category: "deals",
+    categoryName: "Deals",
+    glyph: "tag",
+    d: parts.map((x) => `${x.qty > 1 ? `${x.qty} × ` : ""}${x.item.n}${x.size ? ` (${x.size})` : ""}`).join(", "),
+    was: was > d.p ? was : null,
+    // cut-out photos of what's inside, used until a deal photo is set in public/images/dealmenu/
+    art: parts.map((x) => x.item.img).filter(Boolean),
+  };
+});
+
+export const ITEM_BY_ID = { ...MENU_BY_ID, ...Object.fromEntries(DEALS.map((d) => [d.id, d])) };
 
 export const defaultSize = (item) => (item.sizes ? Object.keys(item.sizes)[0] : null);
 
@@ -117,11 +141,12 @@ const FBT = {
   desserts: ["chai-chaialogy-special", "chai-karak-chai", "drinks-lemonade", "drinks-mint-margarita"],
   drinks: ["burgers-french-fries-regular", "desserts-fudge-brownie", "desserts-chocolate-cookies"],
   addons: ["burgers-french-fries-regular", "drinks-regular-drink"],
+  deals: ["addons-garlic-sauce", "addons-spicy-garlic", "drinks-mint-margarita", "desserts-fudge-brownie", "desserts-extra-bun"],
 };
 export const frequentlyBoughtWith = (item) =>
   (FBT[item.category] || []).filter((id) => id !== item.id && ITEM_BY_ID[id]).map((id) => ITEM_BY_ID[id]);
 
-export const imgSrc = (item) => item.img || null; // e.g. "/images/menu-cut/half-broast.webp"
+export const imgSrc = (item) => item.img || item.art?.[0] || null; // e.g. "/images/menu-cut/half-broast.webp"
 
 export const POPULAR = ITEMS.filter((i) => i.popular);
 
