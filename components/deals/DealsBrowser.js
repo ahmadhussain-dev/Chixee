@@ -46,7 +46,7 @@ function GroupBanner({ banner, icon: BIcon }) {
 }
 
 // /deals: promo + deals carousel, a maroon Deal Categories panel (tiles + search), sticky chips once it scrolls away,
-// then each group with its heading, banner and a grid of deal cards (alternating white and maroon).
+// then each group with its heading, banner and a grid of deal cards (same maroon + yellow card in every group).
 export default function DealsBrowser() {
   const [q, setQ] = useState("");
   const [active, setActive] = useState(GROUPS[0]?.id);
@@ -161,7 +161,7 @@ export default function DealsBrowser() {
       <BackToTop show={stuck} />
 
       <div className="wrap -mt-[60px]">
-        {groups.map((g, gi) => g.shown.length > 0 && (
+        {groups.map((g) => g.shown.length > 0 && (
           <section key={g.id} id={`deals-${g.id}`} aria-labelledby={`deals-${g.id}-h`} className="scroll-mt-[64px] pt-9 sm:pt-14">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="h-9 w-1.5 flex-none rounded-full bg-yellow sm:h-11" />
@@ -173,7 +173,7 @@ export default function DealsBrowser() {
             </div>
             {g.banner && <GroupBanner banner={g.banner} icon={GROUP_ICONS[g.icon]} />}
             <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 sm:gap-x-5 sm:gap-y-3 md:grid-cols-3 xl:grid-cols-4">
-              {g.shown.map((d) => <DealCard key={d.id} deal={d} tone={gi % 2 ? "maroon" : "light"} />)}
+              {g.shown.map((d) => <DealCard key={d.id} deal={d} />)}
             </div>
           </section>
         ))}
