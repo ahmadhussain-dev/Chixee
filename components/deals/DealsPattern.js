@@ -10,7 +10,8 @@ const SPOTS = [
   [Coffee, 74, 50, 36, -8, "m", 1], [Ticket, 80, 14, 34, -24, "y"], [Sandwich, 85, 72, 40, 16, "m", 1], [Percent, 91, 34, 30, -12, "r"],
   [IceCreamCone, 96, 82, 34, 20, "m"], [Star, 97, 4, 24, 0, "y"], [Pizza, 56, 92, 30, 30, "m", 1], [Tag, 5, 92, 28, 22, "r"],
 ];
-const TONES = { m: "text-maroon/[.10]", r: "text-red/[.16]", y: "text-yellow-deep/40" };
+// Tuned for the red Hot Deals band: faint white and gold outlines.
+const TONES = { m: "text-white/[.07]", r: "text-yellow/[.12]", y: "text-yellow/[.2]" };
 
 export default function DealsPattern() {
   return (
