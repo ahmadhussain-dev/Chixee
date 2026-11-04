@@ -5,6 +5,7 @@
 
 // NOTE: soft drink flavours follow the drink photos; confirm with the owner which ones are stocked.
 import { DEAL_GROUPS as RAW_GROUPS, DEAL_SPECS } from "@/data/deals";
+import IMAGE_VERSIONS from "@/data/image-versions.json";
 
 const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
 
@@ -88,6 +89,10 @@ function variationsOf(it) {
   return {};
 }
 
+// Adds the photo's content hash (scripts/image-versions.mjs) to its URL, so a photo replaced under the
+// same file name shows up straight away on every device instead of an old cached copy.
+export const fresh = (src) => (src && IMAGE_VERSIONS[src] ? `${src}?v=${IMAGE_VERSIONS[src]}` : src);
+
 export const ITEMS = MENU.flatMap((c) =>
   c.items.map((it) => ({
     ...it,
@@ -96,6 +101,7 @@ export const ITEMS = MENU.flatMap((c) =>
     category: c.id,
     categoryName: c.name,
     glyph: it.glyph || c.glyph,
+    img: fresh(it.img),
   }))
 );
 
@@ -113,6 +119,7 @@ export const DEALS = DEAL_SPECS.map((d) => {
   const was = parts.reduce((s, x) => s + priceOf(x.item, x.size) * x.qty, 0);
   return {
     ...d,
+    img: fresh(d.img),
     id: `deals-${slug(d.n)}`,
     category: "deals",
     categoryName: "Deals",
@@ -127,7 +134,7 @@ export const DEALS = DEAL_SPECS.map((d) => {
 // Group banners get the cut-out photos of the items they name.
 export const DEAL_GROUP_LIST = RAW_GROUPS.map((g) => ({
   ...g,
-  banner: g.banner ? { ...g.banner, artImgs: g.banner.art.map((id) => MENU_BY_ID[id]?.img).filter(Boolean) } : null,
+  banner: g.banner ? { ...g.banner, img: fresh(g.banner.img), artImgs: g.banner.art.map((id) => MENU_BY_ID[id]?.img).filter(Boolean) } : null,
 }));
 export { DEAL_GROUP_LIST as DEAL_GROUPS };
 
