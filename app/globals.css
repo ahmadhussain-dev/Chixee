@@ -23,6 +23,7 @@
   --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --animate-marquee: marquee 32s linear infinite;
+  --animate-marquee-right: marquee-right 48s linear infinite;
   --animate-spin-slow: spin 18s linear infinite;
   --animate-pop: pop 0.35s var(--ease-brand);
   --animate-slidein: slidein 0.4s var(--ease-brand);
@@ -34,6 +35,7 @@
   --animate-wiggle: wiggle 2.6s ease-in-out infinite;
 
   @keyframes marquee { to { transform: translateX(-50%); } }
+  @keyframes marquee-right { from { transform: translateX(-50%); } to { transform: none; } }
   @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: none; opacity: 1; } }
   @keyframes slidein { from { transform: translateX(30px); opacity: 0; } }
   @keyframes float { 50% { transform: translateY(-8px); } }

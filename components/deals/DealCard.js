@@ -22,7 +22,7 @@ export default function DealCard({ deal, tone = "maroon" }) {
   return (
     <div className="relative pt-3">
       {pct > 0 && (
-        <span className="absolute left-2.5 top-0 z-[3] rounded-full bg-yellow px-2.5 py-0.5 text-[11px] font-extrabold tracking-wide text-ink shadow-[0_4px_10px_rgba(242,174,0,.45)] sm:text-xs">
+        <span className="absolute left-2.5 top-0 z-[3] rounded-full bg-red px-2.5 py-0.5 text-[11px] font-extrabold tracking-wide text-white shadow-[0_4px_10px_rgba(227,38,45,.4)] ring-2 ring-white sm:text-xs">
           {pct}% OFF
         </span>
       )}

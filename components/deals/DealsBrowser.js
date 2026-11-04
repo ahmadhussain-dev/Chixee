@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BadgePercent, CalendarDays, Flame, Hamburger, Moon, Users } from "lucide-react";
 import DealCard from "@/components/deals/DealCard";
@@ -106,7 +107,16 @@ export default function DealsBrowser() {
     <>
       <h1 className="sr-only">Chixee deals</h1>
       {/* Carousel: "Open till 2 AM" promo first, then featured deals */}
-      <div className="wrap pt-4 sm:pt-6">
+      <div className="wrap pt-3 sm:pt-5">
+        {/* Way back to the main menu */}
+        <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-2 text-sm sm:mb-4">
+          <Link href="/#menu" className="inline-flex items-center gap-1.5 rounded-full bg-maroon py-2 pl-2.5 pr-4 font-semibold text-white shadow-[0_6px_14px_rgba(107,13,17,.25)] transition hover:-translate-y-0.5 hover:bg-maroon-dark">
+            <Icon name="left" className="size-4" strokeWidth={2.6} />
+            Back to menu
+          </Link>
+          <span aria-hidden="true" className="text-muted">/</span>
+          <span aria-current="page" className="font-semibold text-maroon">Deals</span>
+        </nav>
         <DealsHero slides={SLIDES} />
       </div>
 
@@ -144,6 +154,10 @@ export default function DealsBrowser() {
         <div className="wrap">
           <div ref={barRef} className="no-scrollbar relative -mx-1 overflow-x-auto px-1 py-2.5">
             <div className="mx-auto flex w-max gap-2 sm:gap-2.5">
+              <Link href="/#menu" tabIndex={stuck ? 0 : -1} className="flex flex-none items-center gap-1 whitespace-nowrap rounded-full bg-yellow py-2 pl-2.5 pr-4 text-[13px] font-semibold text-maroon-dark transition hover:bg-yellow-deep sm:py-2.5 sm:text-[15px]">
+                <Icon name="left" className="size-4" strokeWidth={2.6} />
+                Menu
+              </Link>
               {groups.map((g) => (
                 <button key={g.id} type="button" data-target={g.id} aria-current={active === g.id ? "true" : undefined} tabIndex={stuck ? 0 : -1} onClick={() => goTo(g.id)}
                   style={{ opacity: g.shown.length ? 1 : 0.4 }}
