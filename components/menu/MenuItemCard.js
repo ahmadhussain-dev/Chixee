@@ -31,6 +31,7 @@ export default function MenuItemCard({ item }) {
   const last = mine.at(-1); // the stepper adjusts the most recently added choice
   const many = item.sizes && Object.keys(item.sizes).length > 1;
   const open = () => openItem(item.id);
+  const save = item.was ? item.was - item.p : 0;
 
   return (
     <article className={`group relative flex gap-3.5 rounded-[18px] bg-white p-3 transition duration-300 ease-brand hover:-translate-y-1 hover:shadow-[0_22px_40px_rgba(107,13,17,.12)] sm:gap-[18px] sm:p-4 ${inCart ? "shadow-[0_0_0_1.5px_var(--color-yellow)]" : "shadow-[0_0_0_1px_var(--color-line)]"}`}>
@@ -38,11 +39,13 @@ export default function MenuItemCard({ item }) {
       <button type="button" onClick={open} aria-label={`${item.n}, ${many ? "from " : ""}${formatPKR(fromPrice(item))}. View options`} className="absolute inset-0 z-[1] cursor-pointer rounded-[18px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon" />
       <div className="relative aspect-square w-[108px] flex-none self-start overflow-hidden rounded-[14px] bg-yellow sm:w-[42%] sm:max-w-[190px]">
         <ItemThumb item={item} sizes="(max-width: 640px) 108px, 190px" />
+        {save > 0 && <span className="absolute left-1.5 top-1.5 z-[3] rounded-full bg-red px-2 py-0.5 text-[10px] font-bold text-white shadow sm:left-2 sm:top-2 sm:text-[11px]">Save {formatPKR(save)}</span>}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 sm:gap-1.5 sm:pt-0.5">
         <div className="flex items-start gap-2">
           <div className="min-w-0 flex-1">
             {item.tag && <span className="mb-1 inline-block rounded-full bg-maroon px-2 py-0.5 text-[10px] font-bold uppercase tracking-[.6px] text-yellow">{item.tag}</span>}
+            {item.when && <span className="mb-1 inline-block rounded-full bg-yellow-soft px-2 py-0.5 text-[11px] font-semibold text-maroon-dark">{item.when}</span>}
             <h3 className="text-[15.5px] font-bold leading-tight text-balance sm:text-lg">{item.n}</h3>
           </div>
           {inCart > 0 && (
@@ -60,6 +63,7 @@ export default function MenuItemCard({ item }) {
           <span className="text-[17px] font-bold tabular-nums sm:text-[19px]">
             {many && <span className="text-[13px] font-semibold text-muted">from </span>}
             {formatPKR(fromPrice(item))}
+            {item.was && <s className="ml-1.5 text-[12.5px] font-medium text-muted">{formatPKR(item.was)}</s>}
           </span>
           {inCart > 0 ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-[#e9f7ec] px-2.5 py-1 text-xs font-bold text-[#1f7a35] ring-1 ring-[#bfe6c8]">

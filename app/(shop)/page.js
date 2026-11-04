@@ -1,3 +1,4 @@
+import DealsStrip from "@/components/deals/DealsStrip";
 import HeroCarousel from "@/components/home/HeroCarousel";
 import Ticker from "@/components/home/Ticker";
 import MenuBrowser from "@/components/menu/MenuBrowser";
@@ -13,6 +14,7 @@ export default function HomePage() {
       <HeroCarousel />
       <Ticker />
       <main className="pb-28">
+        <DealsStrip />
         <MenuBrowser />
         <div className="wrap">
           <VisitBand />

@@ -50,7 +50,9 @@ export const POST = handle(async (req) => {
     const price = priceOf(item, size);
     const note = clean(raw.note, 200);
     const ifUnavailable = IF_UNAVAILABLE[raw.ifUnavailable] ? raw.ifUnavailable : "remove";
-    lines.push({ itemId: item.id, name: item.n, size, price, qty, total: price * qty, note, ifUnavailable });
+    // Deals carry their contents in the line name so the kitchen sees what to pack.
+    const lineName = item.category === "deals" ? `${item.n} (${item.d})` : item.n;
+    lines.push({ itemId: item.id, name: lineName, size, price, qty, total: price * qty, note, ifUnavailable });
   }
   if (!lines.length) return fail("Your cart is empty.");
 

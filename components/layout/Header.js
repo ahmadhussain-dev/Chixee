@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import Icon from "@/components/ui/Icon";
+import Icon, { Glyph } from "@/components/ui/Icon";
 import Logo from "@/components/ui/Logo";
 import { useLocation } from "@/context/LocationContext";
 import { SITE } from "@/data/site";
@@ -112,6 +112,10 @@ export default function Header() {
             <b className="block font-display text-2xl leading-none tracking-wide md:text-[28px]">CHIXEE</b>
             <small className="hidden font-script text-[19px] leading-none text-maroon-dark sm:block">{SITE.tagline}</small>
           </span>
+        </Link>
+        <Link href="/deals" className="hidden items-center gap-1.5 rounded-full bg-red px-4 py-2 font-bold text-white shadow-[0_6px_14px_rgba(227,38,45,.3)] transition hover:-translate-y-0.5 lg:inline-flex">
+          <Glyph name="tag" className="size-4" />
+          Deals
         </Link>
         <div className="order-3 flex w-full items-center gap-2 rounded-2xl bg-white/40 p-1.5 sm:gap-3 lg:contents">
           <LocationChip />

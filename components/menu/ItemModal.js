@@ -115,7 +115,7 @@ export default function ItemModal({ item, onClose }) {
             <div>
               {item.tag && <span className="mb-1.5 inline-block rounded-full bg-maroon px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[.6px] text-yellow">{item.tag}</span>}
               <h2 id="item-modal-title" className="text-2xl font-bold leading-tight">{item.n}</h2>
-              <p className="mt-2 text-xl font-bold tabular-nums">{options && options.length > 1 && !variation ? <><span className="text-base font-semibold text-muted">from </span>{formatPKR(fromPrice(item))}</> : formatPKR(unit)}</p>
+              <p className="mt-2 text-xl font-bold tabular-nums">{options && options.length > 1 && !variation ? <><span className="text-base font-semibold text-muted">from </span>{formatPKR(fromPrice(item))}</> : formatPKR(unit)}{item.was && <s className="ml-2 text-base font-medium text-muted">{formatPKR(item.was)}</s>}</p>
               {item.d && <p className="mt-2 leading-relaxed text-muted">{item.d}</p>}
             </div>
 

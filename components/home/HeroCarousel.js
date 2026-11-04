@@ -85,16 +85,16 @@ export default function HeroCarousel() {
                   </div>
                 ))}
               </div>
-              <div className="absolute inset-0 overflow-hidden md:relative">
+              <div className="absolute inset-0 overflow-hidden">
                 {s.img ? (
-                  <Image src={s.img} alt={s.alt} fill priority={i === 0} sizes="(max-width: 768px) 100vw, 50vw" style={{ objectPosition: s.pos }} className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-[1.12]"}`} />
+                  <Image src={s.img} alt={s.alt} fill priority={i === 0} sizes="100vw" style={{ objectPosition: s.pos }} className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-[1.12]"}`} />
                 ) : (
                   // Placeholder until a banner image is set in data/images.js
                   <div className="tile-bg absolute inset-0 grid place-items-center overflow-hidden" aria-label={s.alt} role="img">
                     <Glyph name={s.glyph} className="relative size-40 text-maroon/70" />
                   </div>
                 )}
-                <div className="absolute inset-0 z-[1] bg-[linear-gradient(0deg,var(--color-night)_30%,rgba(28,17,13,.55)_100%)] md:bg-[linear-gradient(90deg,var(--color-night)_0%,rgba(28,17,13,0)_28%)]" />
+                <div className="absolute inset-0 z-[1] bg-[linear-gradient(0deg,rgba(28,17,13,.92)_0%,rgba(28,17,13,.6)_45%,rgba(28,17,13,.2)_100%)] md:bg-[linear-gradient(90deg,rgba(28,17,13,.82)_0%,rgba(28,17,13,.55)_38%,rgba(28,17,13,.1)_62%,rgba(28,17,13,0)_100%)]" />
               </div>
             </article>
           );
