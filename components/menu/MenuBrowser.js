@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import Icon from "@/components/ui/Icon";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Icon, { Glyph } from "@/components/ui/Icon";
 import MenuItemCard from "@/components/menu/MenuItemCard";
 import { MENU, ITEMS } from "@/data/menu";
 import { useCart } from "@/context/CartContext";
@@ -49,7 +49,6 @@ function SearchButton({ show, onClick }) {
 export default function MenuBrowser() {
   const [q, setQ] = useState("");
   const [active, setActive] = useState(MENU[0].id);
-  const [ink, setInk] = useState({ x: 0, w: 0 });
   const [stuck, setStuck] = useState(false);
   const tabsRef = useRef(null);
   const sentinelRef = useRef(null);
@@ -92,18 +91,11 @@ export default function MenuBrowser() {
     return () => removeEventListener("scroll", spy);
   }, [q]);
 
-  // Sliding yellow ink under the active tab.
-  useLayoutEffect(() => {
-    const place = () => {
-      const b = tabsRef.current?.querySelector(`[data-target="${active}"]`);
-      if (!b) return;
-      setInk({ x: b.offsetLeft, w: b.offsetWidth });
-      tabsRef.current.scrollTo({ left: b.offsetLeft - tabsRef.current.clientWidth / 2 + b.offsetWidth / 2, behavior: "smooth" });
-    };
-    place();
-    addEventListener("resize", place);
-    document.fonts?.ready.then(place);
-    return () => removeEventListener("resize", place);
+  // Keep the active category tile scrolled into view in the bar.
+  useEffect(() => {
+    const bar = tabsRef.current;
+    const b = bar?.querySelector(`[data-target="${active}"]`);
+    if (b) bar.scrollTo({ left: b.offsetLeft - bar.clientWidth / 2 + b.offsetWidth / 2, behavior: "smooth" });
   }, [active]);
 
   // Mobile search button: bring the menu search bar back into view just under the sticky categories, then focus it.
@@ -117,22 +109,31 @@ export default function MenuBrowser() {
 
   return (
     <>
+      <div className="wrap mt-8 flex items-center gap-4 sm:mt-10">
+        <span aria-hidden="true" className="h-0.5 flex-1 rounded bg-gradient-to-r from-transparent to-yellow" />
+        <h2 className="heading text-[26px] text-maroon sm:text-[32px]">Explore Menu</h2>
+        <span aria-hidden="true" className="h-0.5 flex-1 rounded bg-gradient-to-l from-transparent to-yellow" />
+      </div>
       <div ref={sentinelRef} aria-hidden="true" className="h-px" />
-      <nav ref={navRef} aria-label="Menu categories" className="sticky top-0 z-40 bg-white/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_rgba(34,20,15,.05)] backdrop-blur-md">
-        <div className="wrap flex items-center gap-2">
-          <div ref={tabsRef} className="no-scrollbar relative flex min-w-0 flex-1 gap-1 overflow-x-auto py-3 sm:gap-1.5">
-            <span aria-hidden="true" style={{ transform: `translateX(${ink.x}px)`, width: ink.w }}
-              className="absolute left-0 top-3 z-0 h-[calc(100%-24px)] rounded-xl bg-yellow shadow-[0_6px_16px_rgba(242,174,0,.35)] transition-[transform,width] duration-500 ease-brand" />
+      <nav ref={navRef} aria-label="Menu categories" className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-300 ${stuck ? "bg-white/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_rgba(34,20,15,.08)] backdrop-blur-md" : ""}`}>
+        <div className="wrap">
+          <div ref={tabsRef} className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 py-2.5 sm:gap-3">
             {sections.map((c) => (
               <button
                 key={c.id}
                 type="button"
                 data-target={c.id}
+                aria-current={active === c.id ? "true" : undefined}
                 onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: smooth() })}
-                style={{ opacity: c.list.length ? 1 : 0.35 }}
-                className={`relative z-[1] flex-none whitespace-nowrap rounded-xl px-3.5 py-2.5 text-[13px] font-semibold uppercase tracking-[.6px] transition-colors hover:text-maroon sm:px-5 sm:text-sm ${active === c.id ? "text-maroon-dark" : "text-ink"}`}
+                style={{ opacity: c.list.length ? 1 : 0.4 }}
+                className={`group/tab flex min-w-[78px] flex-none flex-col items-center gap-1 rounded-2xl px-3 py-2 text-[12px] font-semibold leading-tight transition duration-300 ease-brand sm:min-w-[96px] sm:px-4 sm:text-[13.5px] ${
+                  active === c.id
+                    ? "bg-yellow text-maroon-dark shadow-[0_6px_16px_rgba(242,174,0,.4)]"
+                    : "bg-white text-ink shadow-[0_0_0_1px_var(--color-line),0_4px_10px_rgba(34,20,15,.04)] hover:-translate-y-0.5 hover:text-maroon"
+                }`}
               >
-                {c.name}
+                <Glyph name={c.glyph} className={`size-[22px] transition-transform duration-300 group-hover/tab:scale-110 sm:size-6 ${active === c.id ? "text-maroon-dark" : "text-maroon"}`} />
+                <span className="whitespace-nowrap">{c.short || c.name}</span>
               </button>
             ))}
           </div>
@@ -151,7 +152,7 @@ export default function MenuBrowser() {
 
         {sections.map((c) =>
           c.list.length ? (
-            <section key={c.id} id={c.id} aria-labelledby={`${c.id}-h`} className="scroll-mt-[72px] pt-9 sm:scroll-mt-[86px] sm:pt-14">
+            <section key={c.id} id={c.id} aria-labelledby={`${c.id}-h`} className="scroll-mt-[86px] pt-9 sm:scroll-mt-[96px] sm:pt-14">
               <div className="mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2 sm:mb-6">
                 <h2 id={`${c.id}-h`} className="heading text-[clamp(28px,3.4vw,42px)] after:mt-3 after:block after:h-[5px] after:w-[90px] after:rounded after:bg-yellow">
                   <small className="mb-0.5 block font-script text-2xl text-maroon">{c.script}</small>
