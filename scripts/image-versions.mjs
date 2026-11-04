@@ -5,8 +5,10 @@
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+// fileURLToPath (not URL.pathname) so Windows paths come out as D:\... instead of /D:/...
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIRS = ["images/menu-cut", "images/dealmenu"];
 const out = {};
 for (const dir of DIRS) {
