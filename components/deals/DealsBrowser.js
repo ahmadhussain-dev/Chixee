@@ -86,6 +86,25 @@ export default function DealsBrowser() {
     return () => removeEventListener("scroll", spy);
   }, [q]);
 
+  // Arriving from a home "Hot Deals" card (/deals#deals-weekly): land on that category once the page has laid out.
+  useEffect(() => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id.startsWith("deals-")) return;
+    // Put the group heading just under the sticky chips; run twice in case Next's own hash scroll lands later.
+    const land = () => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const navH = navRef.current?.offsetHeight || 60;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH + 20, behavior: "instant" });
+    };
+    const t1 = setTimeout(land, 150);
+    const t2 = setTimeout(land, 700);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
   const goTo = (id) => document.getElementById(`deals-${id}`)?.scrollIntoView({ behavior: smooth() });
 
   // Phone search button: bring the deals search bar back under the sticky chips, then focus it.

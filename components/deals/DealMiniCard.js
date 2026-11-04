@@ -1,7 +1,7 @@
 "use client";
 import { CalendarDays, Clock, Crown, Hamburger, Moon, ShoppingCart, Users } from "lucide-react";
+import Link from "next/link";
 import ItemThumb from "@/components/menu/ItemThumb";
-import { useItemModal } from "@/context/ItemModalContext";
 import { formatPKR } from "@/data/menu";
 
 // Badge icon per deal group; the "Deal of the day" gets a crown.
@@ -9,17 +9,15 @@ const BADGE_ICON = { today: Clock, weekly: CalendarDays, combos: Hamburger, fami
 
 // Compact deal card for the home "Hot Deals" row. tone "maroon" (red body) or "cream" (light body);
 // text on the left, the food on a yellow arc on the right. The featured "Deal of the day" glows.
-// Tapping anywhere opens the item popup.
+// Tapping it goes to that deal's category on /deals (e.g. /deals#deals-weekly).
 export default function DealMiniCard({ deal, tone = "maroon", className = "" }) {
-  const { openItem } = useItemModal();
   const maroon = tone === "maroon";
   const star = deal.badge === "Deal of the day";
   const BIcon = star ? Crown : BADGE_ICON[deal.group];
   return (
-    <button
-      type="button"
-      onClick={() => openItem(deal.id)}
-      aria-label={`${deal.n}, ${formatPKR(deal.p)}. Order deal`}
+    <Link
+      href={`/deals#deals-${deal.group}`}
+      aria-label={`${deal.n}, ${formatPKR(deal.p)}. See ${deal.badge || "this deal"} on the deals page`}
       className={`group relative flex min-h-[176px] overflow-hidden rounded-[22px] text-left transition duration-300 ease-brand hover:-translate-y-1 ${
         maroon ? "bg-[linear-gradient(135deg,#c4262c,#8c1218_70%)] text-white" : "bg-[#fdf1dc] text-ink"
       } ${star ? "shadow-[0_0_0_3px_#ffc20e,0_0_26px_rgba(255,194,14,.55)]" : "shadow-[0_14px_30px_rgba(40,4,6,.35)]"} ${className}`}
@@ -48,6 +46,6 @@ export default function DealMiniCard({ deal, tone = "maroon", className = "" }) 
           <ItemThumb item={deal} sizes="170px" />
         </span>
       </span>
-    </button>
+    </Link>
   );
 }
