@@ -10,7 +10,7 @@ const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
 
 export const MENU = [
   { id: "broast", name: "Broast", script: "Authentic", glyph: "drum", note: "Leg, thigh, wing and chest pieces, injected and pressure fried.", items: [
-    { n: "Quarter Broast", d: "2 Pc chicken (leg & thigh), French fries, bun, 1 reg garlic", p: 750, img: "/images/menu/quarterbroast.jpg" , loading:"eager" },
+    { n: "Quarter Broast", d: "2 Pc chicken (leg & thigh), French fries, bun, 1 reg garlic", p: 750, img: "/images/menu-cut/quarter-broast.webp" , loading:"eager" },
     { n: "Half Broast", d: "4 Pc chicken (leg, thigh, wing, chest), French fries, 2 buns, 1 reg garlic, 1 spicy garlic", p: 1450, tag: "Popular", img: "/images/menu-cut/half-broast.webp", popular: true },
     { n: "Full Broast", d: "8 Pc chicken (2 of each piece), French fries, 4 buns, 2 reg garlic, 2 spicy garlic", p: 2750, tag: "Family", img: "/images/menu-cut/full-broast.webp", popular: true },
   ]},
@@ -39,10 +39,10 @@ export const MENU = [
   ]},
   { id: "chai", name: "Chaialogy", script: "It’s science", glyph: "cup", note: "Chai isn’t just a drink, it’s science.", items: [
     { n: "Chaialogy Special", d: "Our signature house chai", p: 180, tag: "House", img: "/images/menu-cut/chaialogy-special-chai.webp", popular: true },
-    { n: "Karak Chai", d: "Strong, slow-brewed karak", p: 150, img: "/images/menu/karakchai.jpg" },
-    { n: "Doodh Pati.jpg", d: "Milk-brewed, rich and creamy", p: 150 , img: "/images/menu/doodhpati.jpg"},
+    { n: "Karak Chai", d: "Strong, slow-brewed karak", p: 150, img: "/images/menu-cut/karak-chai.webp" },
+    { n: "Doodh Patti", d: "Milk-brewed, rich and creamy", p: 150 , img: "/images/menu/doodhpati.jpg"},
     { n: "Chocolate Chai", d: "Chai with a chocolate finish", p: 180, img: "/images/menu-cut/chocolate-chai.webp" },
-    { n: "Adrak Chai", d: "Ginger-spiced chai", p: 180, img: "/images/menu/jingertea.jpg" },
+    { n: "Adrak Chai", d: "Ginger-spiced chai", p: 180, img: "/images/menu-cut/adrak-chai.webp" },
   ]},
   { id: "desserts", name: "Cookies & Desserts", short: "Desserts", script: "Sweet finish", glyph: "cake", items: [
     { n: "Fudge Brownie", d: "Dense chocolate fudge brownie", p: 320, img: "/images/menu-cut/fudge-brownie.webp" },
@@ -57,8 +57,8 @@ export const MENU = [
     { n: "Blue Lagoon Mocktail", d: "Blue curaçao mocktail with lemon", p: 260, img: "/images/menu-cut/blue-lagoon-mocktail.webp" },
     { n: "Lemonade", d: "Fresh squeezed lemonade", p: 220, img: "/images/menu-cut/lemonade.webp" },
     { n: "Diet Sprite 500ml", d: "Spiced cumin soda", p: 280, img: "/images/menu/dietsprite500ml.jpg" },
-    { n: "Regular Drink", d: "Soft drink, regular", p: 100, flavours: SOFT_DRINKS, img: "/images/menu/regulardrinkspack.jpg" },
-    { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, flavours: SOFT_DRINKS, img: "/images/menu/Drink500ml.jpg" },
+    { n: "Regular Drink", d: "Soft drink, regular", p: 100, flavours: SOFT_DRINKS, img: "/images/menu-cut/regular-drink.webp" },
+    { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, flavours: SOFT_DRINKS, img: "/images/menu-cut/drink-500-ml.webp" },
     { n: "Drinking Water", d: "Mineral water", sizes: { "½ Litre": 70, "1.5 Litre": 160 }, img: "/images/menu-cut/drinking-water-1-5-litre.webp" },
   ]},
   { id: "addons", name: "Add-ons", script: "Make it yours", glyph: "plus", items: [
