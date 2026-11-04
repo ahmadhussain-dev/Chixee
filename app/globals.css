@@ -30,6 +30,8 @@
   --animate-bump: bump 0.5s var(--ease-brand);
   --animate-fill: fill 6s linear forwards;
   --animate-fade-up: fade-up 0.6s var(--ease-brand) both;
+  --animate-jelly: jelly 2.6s ease-in-out infinite;
+  --animate-wiggle: wiggle 2.6s ease-in-out infinite;
 
   @keyframes marquee { to { transform: translateX(-50%); } }
   @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -37,6 +39,9 @@
   @keyframes float { 50% { transform: translateY(-8px); } }
   @keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.45); } 100% { transform: scale(1); } }
   @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  /* Squash-and-stretch hop and a playful wiggle that keep pulling the eye to Deals */
+  @keyframes jelly { 0%, 52%, 100% { transform: none; } 8% { transform: scale(1.16, .84); } 18% { transform: translateY(-5px) scale(.9, 1.1); } 28% { transform: scale(1.06, .94); } 38% { transform: scale(.98, 1.02); } }
+  @keyframes wiggle { 0%, 52%, 100% { transform: none; } 10% { transform: rotate(-14deg) scale(1.12); } 20% { transform: rotate(12deg) scale(1.12); } 30% { transform: rotate(-8deg) scale(1.05); } 40% { transform: rotate(4deg); } }
   @keyframes fade-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 }
 
