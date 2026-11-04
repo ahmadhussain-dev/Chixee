@@ -7,8 +7,8 @@ import { formatPKR } from "@/data/menu";
 
 // Deal card on /deals: "% OFF" tag, photo with a "serves" badge, name and contents,
 // crossed-out menu price above the deal price, and a round + button (a − qty + stepper once added).
-// tone "maroon" gives the darker card used on alternate groups.
-export default function DealCard({ deal, tone = "light" }) {
+// Every group uses the brand card: yellow photo tile on a maroon body. tone "light" (white body) is kept for other uses.
+export default function DealCard({ deal, tone = "maroon" }) {
   const { lines, setLineQty, add } = useCart();
   const { openItem } = useItemModal();
   const mine = lines.filter((l) => l.id === deal.id);
@@ -32,7 +32,7 @@ export default function DealCard({ deal, tone = "light" }) {
         } ${inCart ? "ring-2 ring-yellow" : ""}`}
       >
         <button type="button" onClick={open} aria-label={`${deal.n}, ${formatPKR(deal.p)}. View deal`} className="absolute inset-0 z-[1] cursor-pointer rounded-[18px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon" />
-        <div className={`relative aspect-[4/3] overflow-hidden ${maroon ? "bg-yellow-soft" : "bg-yellow"}`}>
+        <div className={`relative aspect-[4/3] overflow-hidden bg-yellow`}>
           <ItemThumb item={deal} sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px" />
           {deal.serves && (
             <span className="absolute bottom-2 right-2 z-[2] inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-xs font-bold text-ink shadow-[0_4px_10px_rgba(0,0,0,.12)] sm:text-[13px]" title={`Serves ${deal.serves}`}>
