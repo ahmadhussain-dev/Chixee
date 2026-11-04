@@ -5,53 +5,14 @@ import { BadgePercent, CakeSlice, CirclePlus, Coffee, CupSoda, Drumstick, Fish, 
 import Icon from "@/components/ui/Icon";
 import MenuItemCard from "@/components/menu/MenuItemCard";
 import { MENU, ITEMS } from "@/data/menu";
-import { useCart } from "@/context/CartContext";
-import useFooterGap from "@/hooks/useFooterGap";
+import { BackToTop, SearchButton, smooth } from "@/components/ui/FloatingButtons";
 
 // Lucide icons for the Explore Menu tiles (stroke 1.5, brand maroon #A3161B, 40px on tablet/desktop).
 const CATEGORY_ICONS = { broast: Drumstick, fish: Fish, pizza: Pizza, burgers: Hamburger, chai: Coffee, desserts: CakeSlice, drinks: CupSoda, addons: CirclePlus };
-const TILE = "group/tab flex w-[86px] flex-none flex-col items-center gap-1.5 rounded-2xl px-2 py-2.5 text-[12px] font-semibold leading-tight transition duration-300 ease-brand sm:w-[112px] sm:py-3 sm:text-[13.5px]";
-const TILE_ICON = "size-8 transition-transform duration-300 group-hover/tab:scale-110 sm:size-10";
-
-const smooth = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
-
-// Floating "back to top" button, shown once the category bar is stuck. Sits above the cart button when that is visible.
-function BackToTop({ show }) {
-  const { count } = useCart();
-  const footerGap = useFooterGap();
-  return (
-    <button
-      type="button"
-      aria-label="Back to top"
-      aria-hidden={!show}
-      tabIndex={show ? 0 : -1}
-      style={{ marginBottom: footerGap }}
-      onClick={() => window.scrollTo({ top: 0, behavior: smooth() })}
-      className={`fixed right-[max(16px,env(safe-area-inset-right))] z-[55] grid size-12 place-items-center rounded-full bg-white text-maroon shadow-[0_10px_26px_rgba(34,20,15,.18)] ring-1 ring-line transition-all duration-500 ease-brand hover:-translate-y-0.5 hover:bg-yellow sm:right-[max(20px,env(safe-area-inset-right))] ${count ? "bottom-[88px] sm:bottom-[96px]" : "bottom-[max(16px,env(safe-area-inset-bottom))] sm:bottom-5"} ${show ? "visible opacity-100" : "invisible translate-y-6 opacity-0"}`}
-    >
-      <Icon name="left" className="size-5 rotate-90" strokeWidth={2.4} />
-    </button>
-  );
-}
-
-// Phones only: a search button stacked just above "back to top"; it jumps to the menu search bar.
-function SearchButton({ show, onClick }) {
-  const { count } = useCart();
-  const footerGap = useFooterGap();
-  return (
-    <button
-      type="button"
-      aria-label="Search the menu"
-      aria-hidden={!show}
-      tabIndex={show ? 0 : -1}
-      style={{ marginBottom: footerGap }}
-      onClick={onClick}
-      className={`fixed right-[max(16px,env(safe-area-inset-right))] z-[55] grid size-12 place-items-center rounded-full bg-maroon text-yellow shadow-[0_10px_26px_rgba(107,13,17,.3)] transition-all duration-500 ease-brand hover:-translate-y-0.5 hover:bg-maroon-dark sm:hidden ${count ? "bottom-[148px]" : "bottom-[max(76px,calc(env(safe-area-inset-bottom)+60px))]"} ${show ? "visible opacity-100" : "invisible translate-y-6 opacity-0"}`}
-    >
-      <Icon name="search" className="size-5" strokeWidth={2.4} />
-    </button>
-  );
-}
+// Tall icon tiles on phones and tablets; one-line pills on desktop so the sticky bar stays slim.
+const tileCls = () =>
+  "group/tab flex w-[86px] flex-none flex-col items-center gap-1.5 rounded-2xl px-2 py-2.5 text-[12px] font-semibold leading-tight transition-all duration-300 ease-brand sm:w-[112px] sm:py-3 sm:text-[13.5px] lg:w-auto lg:flex-row lg:gap-2 lg:rounded-full lg:py-2 lg:pl-3 lg:pr-4 lg:text-sm";
+const iconCls = () => "size-8 transition-all duration-300 group-hover/tab:scale-110 sm:size-10 lg:size-7";
 
 export default function MenuBrowser() {
   const [q, setQ] = useState("");
@@ -124,37 +85,37 @@ export default function MenuBrowser() {
       <div ref={sentinelRef} aria-hidden="true" className="h-px" />
       <nav ref={navRef} aria-label="Menu categories" className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-300 ${stuck ? "bg-white/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_rgba(34,20,15,.08)] backdrop-blur-md" : ""}`}>
         <div className="wrap">
-          <div ref={tabsRef} className="no-scrollbar relative -mx-1 overflow-x-auto px-1 py-2.5">
-            <div className="mx-auto flex w-max gap-2 sm:gap-3.5">
-            {sections.map((c) => {
-              const CatIcon = CATEGORY_ICONS[c.id] || Utensils;
-              return (
-              <button
-                key={c.id}
-                type="button"
-                data-target={c.id}
-                aria-current={active === c.id ? "true" : undefined}
-                onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: smooth() })}
-                style={{ opacity: c.list.length ? 1 : 0.4 }}
-                className={`${TILE} ${
-                  active === c.id
-                    ? "bg-yellow text-maroon-dark shadow-[0_6px_16px_rgba(242,174,0,.4)]"
-                    : "bg-white text-ink shadow-[0_0_0_1px_var(--color-line),0_4px_10px_rgba(34,20,15,.04)] hover:-translate-y-0.5 hover:text-maroon"
-                }`}
-              >
-                <CatIcon aria-hidden="true" strokeWidth={1.5} color="#A3161B" className={TILE_ICON} />
-                <span className="whitespace-nowrap">{c.short || c.name}</span>
-              </button>
-              );
-            })}
-            <Link
-              href="/deals"
-              className={`${TILE} bg-red text-white shadow-[0_6px_16px_rgba(227,38,45,.3)] hover:-translate-y-0.5`}
-            >
-              <BadgePercent aria-hidden="true" strokeWidth={1.5} className={TILE_ICON} />
-              <span className="whitespace-nowrap">Deals</span>
-            </Link>
+          <div className="flex items-center gap-2 sm:justify-center sm:gap-3.5">
+            {/* Categories scroll sideways on phones; the Deals tile stays pinned on the right */}
+            <div ref={tabsRef} className="no-scrollbar relative -ml-1 min-w-0 flex-initial overflow-x-auto py-2.5 pl-1 [mask-image:linear-gradient(90deg,#000_calc(100%-28px),transparent)] sm:ml-0 sm:pl-0 sm:[mask-image:none]">
+              <div className="flex w-max gap-2 pr-6 sm:gap-3.5 sm:pr-0">
+                {sections.map((c) => {
+                  const CatIcon = CATEGORY_ICONS[c.id] || Utensils;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      data-target={c.id}
+                      aria-current={active === c.id ? "true" : undefined}
+                      onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: smooth() })}
+                      style={{ opacity: c.list.length ? 1 : 0.4 }}
+                      className={`${tileCls()} ${
+                        active === c.id
+                          ? "bg-yellow text-maroon-dark shadow-[0_6px_16px_rgba(242,174,0,.4)]"
+                          : "bg-white text-ink shadow-[0_0_0_1px_var(--color-line),0_4px_10px_rgba(34,20,15,.04)] hover:-translate-y-0.5 hover:text-maroon"
+                      }`}
+                    >
+                      <CatIcon aria-hidden="true" strokeWidth={1.5} color="#A3161B" className={iconCls()} />
+                      <span className="whitespace-nowrap">{c.short || c.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+            <Link href="/deals" className={`${tileCls()} bg-red text-white shadow-[0_6px_16px_rgba(227,38,45,.35)] hover:-translate-y-0.5`}>
+              <BadgePercent aria-hidden="true" strokeWidth={1.5} className={`${iconCls()} animate-wiggle`} />
+              <span className="inline-block animate-jelly whitespace-nowrap">Deals</span>
+            </Link>
           </div>
         </div>
       </nav>
@@ -171,7 +132,7 @@ export default function MenuBrowser() {
 
         {sections.map((c) =>
           c.list.length ? (
-            <section key={c.id} id={c.id} aria-labelledby={`${c.id}-h`} className="scroll-mt-[100px] pt-9 sm:scroll-mt-[114px] sm:pt-14">
+            <section key={c.id} id={c.id} aria-labelledby={`${c.id}-h`} className="scroll-mt-[100px] pt-9 sm:scroll-mt-[114px] sm:pt-14 lg:scroll-mt-[76px]">
               <div className="mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2 sm:mb-6">
                 <h2 id={`${c.id}-h`} className="heading text-[clamp(28px,3.4vw,42px)] after:mt-3 after:block after:h-[5px] after:w-[90px] after:rounded after:bg-yellow">
                   <small className="mb-0.5 block font-script text-2xl text-maroon">{c.script}</small>

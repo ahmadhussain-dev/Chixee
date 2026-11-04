@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import DealMiniCard from "@/components/deals/DealMiniCard";
-import Icon, { Glyph } from "@/components/ui/Icon";
+import { BadgePercent } from "lucide-react";
+import Icon from "@/components/ui/Icon";
 import { DEALS } from "@/data/menu";
 
 // Featured deals first, then today's, then the rest; the home page shows the first few.
@@ -42,10 +43,16 @@ export default function DealsStrip() {
   return (
     <section aria-labelledby="hot-deals-h" className="wrap pt-8 sm:pt-10">
       <div className="flex items-center gap-2.5">
-        <span aria-hidden="true" className="grid size-9 place-items-center rounded-xl bg-red text-white shadow-[0_6px_14px_rgba(227,38,45,.3)]">
-          <Glyph name="flame" className="size-5" />
-        </span>
-        <h2 id="hot-deals-h" className="heading text-[26px] text-maroon sm:text-[32px]">Hot Deals</h2>
+        {/* Eye-catching link to /deals: the badge wiggles, the title hops, and a soft ring pulses behind */}
+        <Link href="/deals" className="group flex items-center gap-2.5" aria-label="Hot Deals, see all deals">
+          <span aria-hidden="true" className="relative grid size-11 flex-none place-items-center sm:size-12">
+            <span className="absolute inset-0 animate-ping rounded-2xl bg-red/35 [animation-duration:2.2s]" />
+            <span className="relative grid size-full animate-wiggle place-items-center rounded-2xl bg-red text-white shadow-[0_8px_18px_rgba(227,38,45,.4)] transition-transform group-hover:scale-110">
+              <BadgePercent strokeWidth={1.75} className="size-7 sm:size-8" />
+            </span>
+          </span>
+          <h2 id="hot-deals-h" className="heading inline-block origin-bottom animate-jelly text-[26px] text-maroon sm:text-[32px]">Hot Deals</h2>
+        </Link>
         <div className="ml-auto flex items-center gap-2">
           {[["left", -1], ["right", 1]].map(([icon, d]) => (
             <button key={icon} type="button" aria-label={d < 0 ? "Previous deals" : "Next deals"} onClick={() => goTo(Math.min(Math.max(page + d, 0), pages - 1))} disabled={d < 0 ? page === 0 : page >= pages - 1}
