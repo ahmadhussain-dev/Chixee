@@ -6,7 +6,8 @@ import { LocationProvider } from "@/context/LocationContext";
 
 export default function Providers({ children }) {
   return (
-    <SessionProvider>
+    // No session refetch on every tab focus: one check on load is enough for this site.
+    <SessionProvider refetchOnWindowFocus={false}>
       <ToastProvider>
         <LocationProvider>
           <CartProvider>{children}</CartProvider>
