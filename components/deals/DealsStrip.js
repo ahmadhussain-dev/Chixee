@@ -1,48 +1,32 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import DealMiniCard from "@/components/deals/DealMiniCard";
 import { BadgePercent } from "lucide-react";
 import Icon from "@/components/ui/Icon";
 import { DEALS } from "@/data/menu";
 
-// Featured deals first, then today's, then the rest; the home page shows the first few.
-const HOT = [...DEALS].sort((a, b) => (b.featured ? 2 : b.group === "today" ? 1 : 0) - (a.featured ? 2 : a.group === "today" ? 1 : 0)).slice(0, 6);
+// Featured deals first, then today's, then the rest.
+const HOT = [...DEALS].sort((a, b) => (b.featured ? 2 : b.group === "today" ? 1 : 0) - (a.featured ? 2 : a.group === "today" ? 1 : 0));
 
-// Home page "Hot Deals": heading with a link to /deals and a swipeable row of deal cards.
+// Home page "Hot Deals": heading with a link to /deals and a row of deal cards that keeps gliding
+// left to right. It stops while the cursor is over it (or a finger is on it, or a card has focus).
+// The list is drawn twice so the loop is seamless; the second copy is hidden from screen readers.
 export default function DealsStrip() {
-  const rowRef = useRef(null);
-  const [page, setPage] = useState(0);
-  const [pages, setPages] = useState(1);
-
-  useEffect(() => {
-    const row = rowRef.current;
-    if (!row) return;
-    const measure = () => {
-      const card = row.firstElementChild;
-      const step = card ? card.offsetWidth + 14 : row.clientWidth;
-      const perView = Math.max(1, Math.round(row.clientWidth / step));
-      setPages(Math.max(1, HOT.length - perView + 1));
-      setPage(Math.min(Math.round(row.scrollLeft / step), HOT.length - perView));
-    };
-    measure();
-    row.addEventListener("scroll", measure, { passive: true });
-    addEventListener("resize", measure);
-    return () => {
-      row.removeEventListener("scroll", measure);
-      removeEventListener("resize", measure);
-    };
-  }, []);
-
-  const goTo = (i) => {
-    const row = rowRef.current;
-    const card = row?.children[i];
-    if (card) row.scrollTo({ left: card.offsetLeft - row.firstElementChild.offsetLeft, behavior: "smooth" });
+  const [held, setHeld] = useState(false);
+  const resume = useRef(null);
+  const hold = () => {
+    clearTimeout(resume.current);
+    setHeld(true);
+  };
+  const release = (delay = 0) => {
+    clearTimeout(resume.current);
+    resume.current = setTimeout(() => setHeld(false), delay);
   };
 
   return (
-    <section aria-labelledby="hot-deals-h" className="wrap pt-8 sm:pt-10">
-      <div className="flex items-center gap-2.5">
+    <section aria-labelledby="hot-deals-h" className="pt-8 sm:pt-10">
+      <div className="wrap flex items-center gap-2.5">
         {/* Eye-catching link to /deals: the badge wiggles, the title hops, and a soft ring pulses behind */}
         <Link href="/deals" className="group flex items-center gap-2.5" aria-label="Hot Deals, see all deals">
           <span aria-hidden="true" className="relative grid size-11 flex-none place-items-center sm:size-12">
@@ -53,34 +37,31 @@ export default function DealsStrip() {
           </span>
           <h2 id="hot-deals-h" className="heading inline-block origin-bottom animate-jelly text-[26px] text-maroon sm:text-[32px]">Hot Deals</h2>
         </Link>
-        <div className="ml-auto flex items-center gap-2">
-          {[["left", -1], ["right", 1]].map(([icon, d]) => (
-            <button key={icon} type="button" aria-label={d < 0 ? "Previous deals" : "Next deals"} onClick={() => goTo(Math.min(Math.max(page + d, 0), pages - 1))} disabled={d < 0 ? page === 0 : page >= pages - 1}
-              className="hidden size-10 place-items-center rounded-full bg-white text-maroon shadow-[0_0_0_1px_var(--color-line)] transition hover:bg-yellow disabled:opacity-35 md:grid">
-              <Icon name={icon} className="size-5" strokeWidth={2.4} />
-            </button>
-          ))}
-          <Link href="/deals" className="inline-flex items-center gap-1 rounded-full bg-white px-3.5 py-2 text-[13px] font-bold text-maroon shadow-[0_0_0_1px_var(--color-line)] transition hover:bg-yellow sm:text-sm">
-            View all
-            <Icon name="right" className="size-4" strokeWidth={2.6} />
-          </Link>
-        </div>
+        <Link href="/deals" className="ml-auto inline-flex items-center gap-1 rounded-full bg-white px-3.5 py-2 text-[13px] font-bold text-maroon shadow-[0_0_0_1px_var(--color-line)] transition hover:bg-yellow sm:text-sm">
+          View all
+          <Icon name="right" className="size-4" strokeWidth={2.6} />
+        </Link>
       </div>
 
-      <div ref={rowRef} className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-3.5 overflow-x-auto scroll-px-4 px-4 pb-2 sm:mx-0 sm:scroll-px-0 sm:px-0">
-        {HOT.map((d, i) => (
-          <DealMiniCard key={d.id} deal={d} tone={i % 2 ? "yellow" : "maroon"} className="w-[82%] max-w-[340px] flex-none snap-start sm:w-[340px]" />
-        ))}
-      </div>
-
-      {pages > 1 && (
-        <div className="mt-2 flex justify-center gap-1.5">
-          {Array.from({ length: pages }, (_, i) => (
-            <button key={i} type="button" aria-label={`Deals ${i + 1}`} aria-current={i === page} onClick={() => goTo(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${i === page ? "w-6 bg-maroon" : "w-2 bg-[#dccfbf]"}`} />
+      <div
+        className="no-scrollbar mt-4 overflow-hidden pb-3 pt-1 motion-reduce:overflow-x-auto [mask-image:linear-gradient(90deg,transparent,#000_4%,#000_96%,transparent)]"
+        onMouseEnter={hold}
+        onMouseLeave={() => release()}
+        onTouchStart={hold}
+        onTouchEnd={() => release(2500)}
+        onFocus={hold}
+        onBlur={() => release()}
+      >
+        <div className="flex w-max animate-marquee-right motion-reduce:animate-none" style={{ animationPlayState: held ? "paused" : "running", animationDuration: `${HOT.length * 8}s` }}>
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex flex-none gap-3.5 pr-3.5" aria-hidden={copy ? true : undefined} inert={copy ? true : undefined}>
+              {HOT.map((d, i) => (
+                <DealMiniCard key={d.id} deal={d} tone={i % 2 ? "yellow" : "maroon"} className="w-[300px] flex-none sm:w-[340px]" />
+              ))}
+            </div>
           ))}
         </div>
-      )}
+      </div>
     </section>
   );
 }

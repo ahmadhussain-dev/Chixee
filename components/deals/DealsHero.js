@@ -46,7 +46,7 @@ export default function DealsHero({ slides }) {
 
   useEffect(() => {
     if (paused || slides.length < 2) return;
-    const t = setInterval(() => setCur((c) => (c + 1) % slides.length), 6000);
+    const t = setInterval(() => setCur((c) => (c + 1) % slides.length), 3500);
     return () => clearInterval(t);
   }, [paused, cur, slides.length]);
 
@@ -70,8 +70,8 @@ export default function DealsHero({ slides }) {
         // Promo slide (e.g. "Open till 2 AM"): a full-width photo with the message on a see-through gradient.
         if (d.promo) {
           return (
-            <article key={d.id} aria-hidden={!active} className={`absolute inset-0 transition-[opacity,visibility] duration-700 ease-brand ${active ? "visible opacity-100" : "invisible opacity-0"}`}>
-              <Image src={d.img} alt="" fill priority={i === 0} sizes="(max-width: 1280px) 100vw, 1240px" style={{ objectPosition: d.pos || "center 30%" }} className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-110"}`} />
+            <article key={d.id} aria-hidden={!active} className={`absolute inset-0 transition-[opacity,visibility] duration-500 ease-brand ${active ? "visible opacity-100" : "invisible opacity-0"}`}>
+              <Image src={d.img} alt="" fill priority={i === 0} sizes="(max-width: 1280px) 100vw, 1240px" style={{ objectPosition: d.pos || "center 30%" }} className={`object-cover transition-transform duration-[4000ms] ease-linear ${active ? "scale-100" : "scale-110"}`} />
               <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(107,13,17,.9)_0%,rgba(140,18,24,.6)_45%,rgba(163,22,27,0)_80%)]" />
               <div className="relative z-[2] flex h-full flex-col justify-center gap-1 p-5 [text-shadow:0_2px_12px_rgba(60,6,9,.45)] sm:p-10 lg:p-12">
                 <span className="font-script text-[22px] text-yellow sm:text-3xl">{d.kicker}</span>
@@ -82,13 +82,13 @@ export default function DealsHero({ slides }) {
           );
         }
         return (
-          <article key={d.id} aria-hidden={!active} className={`absolute inset-0 transition-[opacity,visibility] duration-700 ease-brand ${active ? "visible opacity-100" : "invisible opacity-0"}`}>
+          <article key={d.id} aria-hidden={!active} className={`absolute inset-0 transition-[opacity,visibility] duration-500 ease-brand ${active ? "visible opacity-100" : "invisible opacity-0"}`}>
             {d.img ? (
-              <Image src={d.img} alt={d.n} fill priority={i === 0} sizes="(max-width: 1024px) 100vw, 800px" className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-110"}`} />
+              <Image src={d.img} alt={d.n} fill priority={i === 0} sizes="(max-width: 1024px) 100vw, 800px" className={`object-cover transition-transform duration-[4000ms] ease-linear ${active ? "scale-100" : "scale-110"}`} />
             ) : (
               <div className="absolute inset-y-0 right-0 w-[52%] sm:w-[50%]">
                 <span aria-hidden="true" className="absolute -right-[18%] top-1/2 aspect-square w-[115%] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,#fff6d6_0%,#ffd75a_70%)]" />
-                <div className={`absolute inset-[8%_2%_10%_0] transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-110"}`}>
+                <div className={`absolute inset-[8%_2%_10%_0] transition-transform duration-[4000ms] ease-linear ${active ? "scale-100" : "scale-110"}`}>
                   <ItemThumb item={d} sizes="(max-width: 1024px) 50vw, 420px" />
                 </div>
               </div>
