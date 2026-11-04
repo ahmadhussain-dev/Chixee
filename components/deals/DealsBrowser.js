@@ -1,20 +1,52 @@
 "use client";
-import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import DealMiniCard from "@/components/deals/DealMiniCard";
+import { BadgePercent, CalendarDays, Flame, Hamburger, Moon, Users } from "lucide-react";
+import DealCard from "@/components/deals/DealCard";
 import DealsHero from "@/components/deals/DealsHero";
-import MenuItemCard from "@/components/menu/MenuItemCard";
 import Icon from "@/components/ui/Icon";
 import { BackToTop, SearchButton, smooth } from "@/components/ui/FloatingButtons";
 import { DEAL_GROUPS, DEALS } from "@/data/menu";
+import { IMAGES } from "@/data/images";
 
+const GROUP_ICONS = { Flame, CalendarDays, Hamburger, Users, Moon };
 const GROUPS = DEAL_GROUPS.map((g) => ({ ...g, list: DEALS.filter((d) => d.group === g.id) })).filter((g) => g.list.length);
 const FEATURED = DEALS.filter((d) => d.featured);
-const SLIDES = FEATURED.length ? FEATURED : DEALS.slice(0, 3);
-// Two quick deals beside the big carousel on wide screens (ones not already in it).
-const SIDE = DEALS.filter((d) => !SLIDES.includes(d)).slice(0, 2);
+const PROMO = { id: "promo-late", promo: true, img: IMAGES.heroBroast, kicker: "Late cravings?", title: "Open till", highlight: "2 AM", text: "Delivery & pickup every day" };
+const SLIDES = [PROMO, ...(FEATURED.length ? FEATURED : DEALS.slice(0, 3))];
 
-// /deals: big carousel, then sticky category chips (Today's, Weekly, ...) and a grid of deal cards per group.
+// Strip under a group heading: the owner's banner photo if set, otherwise big text with the items' cut-outs.
+function GroupBanner({ banner, icon: BIcon }) {
+  if (banner.img) {
+    return (
+      <div className="relative mt-4 aspect-[3/1] overflow-hidden rounded-[22px] sm:aspect-[5/1]">
+        <Image src={banner.img} alt={`${banner.t1} ${banner.t2}`} fill sizes="(max-width: 1280px) 100vw, 1240px" className="object-cover" />
+      </div>
+    );
+  }
+  const maroon = banner.tone === "maroon";
+  return (
+    <div aria-hidden="true" className={`relative mt-4 flex h-[118px] items-center overflow-hidden rounded-[22px] px-[18px] sm:h-[170px] sm:px-10 ${maroon ? "bg-[radial-gradient(circle_at_80%_50%,#c4262c,var(--color-maroon)_50%,var(--color-maroon-dark))] text-white" : "bg-yellow text-maroon-dark"}`}>
+      <div className="relative z-[2] flex flex-col font-display uppercase leading-[.9]">
+        <small className="mb-1 flex items-center gap-1.5 font-body text-[11px] font-bold tracking-[1px] opacity-85">{BIcon && <BIcon strokeWidth={1.75} className="size-4" />}Chixee</small>
+        <span className="text-[34px] sm:text-[56px]">{banner.t1}</span>
+        <span className={`text-[34px] sm:text-[56px] ${maroon ? "text-yellow" : "text-red"}`}>{banner.t2}</span>
+        <em className="mt-1.5 font-body text-[11px] font-medium normal-case not-italic opacity-85 sm:text-sm">{banner.sub}</em>
+      </div>
+      <div className="absolute inset-y-0 right-0 w-[52%]">
+        <span className={`absolute -right-[20%] top-1/2 aspect-square w-[110%] -translate-y-1/2 rounded-full ${maroon ? "bg-yellow" : "bg-white/35"}`} />
+        {banner.artImgs.slice(0, 2).map((src, i) => (
+          <div key={src} className={`absolute ${i ? "bottom-1 right-1 h-[62%] w-[34%]" : "right-[20%] top-[4%] h-[92%] w-[50%]"}`}>
+            <Image src={src} alt="" fill sizes="240px" className="object-contain drop-shadow-[0_8px_10px_rgba(0,0,0,.3)]" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// /deals: promo + deals carousel, a maroon Deal Categories panel (tiles + search), sticky chips once it scrolls away,
+// then each group with its heading, banner and a grid of deal cards (alternating white and maroon).
 export default function DealsBrowser() {
   const [q, setQ] = useState("");
   const [active, setActive] = useState(GROUPS[0]?.id);
@@ -53,6 +85,8 @@ export default function DealsBrowser() {
     return () => removeEventListener("scroll", spy);
   }, [q]);
 
+  const goTo = (id) => document.getElementById(`deals-${id}`)?.scrollIntoView({ behavior: smooth() });
+
   // Phone search button: bring the deals search bar back under the sticky chips, then focus it.
   const goToSearch = () => {
     const box = searchRef.current;
@@ -70,68 +104,76 @@ export default function DealsBrowser() {
 
   return (
     <>
+      <h1 className="sr-only">Chixee deals</h1>
+      {/* Carousel: "Open till 2 AM" promo first, then featured deals */}
       <div className="wrap pt-4 sm:pt-6">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-maroon hover:underline">
-          <Icon name="left" className="size-4" strokeWidth={2.6} />
-          Back to menu
-        </Link>
-        <div className="mt-1 flex flex-wrap items-end gap-x-4 gap-y-1">
-          <h1 className="heading text-[clamp(34px,4.4vw,48px)] text-maroon">Deals</h1>
-          <p className="pb-1.5 text-sm text-muted sm:text-[15px]">Fresh offers every day. Prices already include the discount.</p>
-        </div>
+        <DealsHero slides={SLIDES} />
+      </div>
 
-        <div className={`mt-4 grid gap-4 sm:mt-5 ${SIDE.length ? "lg:grid-cols-[1.6fr_1fr]" : ""}`}>
-          <DealsHero slides={SLIDES} />
-          {SIDE.length > 0 && (
-            <div className="hidden gap-4 lg:grid lg:grid-rows-2">
-              {SIDE.map((d, i) => <DealMiniCard key={d.id} deal={d} tone={i ? "yellow" : "maroon"} />)}
+      {/* Deal Categories panel: icon tiles + search */}
+      <div className="wrap mt-4 sm:mt-6">
+        <div className="rounded-[24px] bg-maroon px-3.5 pb-4 pt-5 text-white shadow-[0_16px_30px_rgba(107,13,17,.2)] sm:px-7 sm:pb-6 sm:pt-6">
+          <h2 className="text-center font-display text-[26px] leading-none text-yellow sm:text-[32px]">Deal Categories</h2>
+          <div className="no-scrollbar -mx-3.5 mt-4 overflow-x-auto px-3.5 sm:mx-0 sm:px-0">
+            <div className="mx-auto flex w-max gap-2 sm:gap-3.5">
+              {groups.map((g) => {
+                const GIcon = GROUP_ICONS[g.icon] || BadgePercent;
+                const on = active === g.id;
+                return (
+                  <button key={g.id} type="button" onClick={() => goTo(g.id)} style={{ opacity: g.shown.length ? 1 : 0.45 }}
+                    className={`group/tile flex w-[84px] flex-none flex-col items-center gap-1.5 rounded-2xl px-1.5 py-2.5 text-center text-[11.5px] font-semibold leading-tight transition duration-300 ease-brand hover:-translate-y-0.5 sm:w-[124px] sm:py-3.5 sm:text-[13.5px] ${on ? "bg-yellow text-maroon-dark shadow-[0_8px_18px_rgba(0,0,0,.22)]" : "bg-white text-ink"}`}>
+                    <GIcon aria-hidden="true" strokeWidth={1.5} color="#A3161B" className="size-8 transition-transform duration-300 group-hover/tile:scale-110 sm:size-10" />
+                    {g.name}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
+          <label ref={searchRef} htmlFor="deal-q" className="mt-4 flex scroll-mt-24 items-center gap-3 rounded-[14px] bg-white py-0.5 pl-4 pr-1 text-ink transition focus-within:shadow-[0_0_0_3px_var(--color-yellow)] sm:mt-5">
+            <Icon name="search" className="size-[22px] flex-none text-muted" />
+            <span className="sr-only">Search deals</span>
+            <input id="deal-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search deals: broast, pizza, chai…" autoComplete="off" className="min-w-0 flex-1 bg-transparent py-3 text-base outline-none placeholder:text-[#a99a90]" />
+            {q && <button type="button" onClick={() => setQ("")} className="rounded-[10px] px-3.5 py-2 text-[13px] font-semibold text-muted hover:bg-cream hover:text-maroon">Clear</button>}
+          </label>
         </div>
       </div>
 
-      <div ref={sentinelRef} aria-hidden="true" className="mt-5 h-px sm:mt-7" />
-      <nav ref={navRef} aria-label="Deal categories" className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-300 ${stuck ? "bg-white/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_rgba(34,20,15,.08)] backdrop-blur-md" : ""}`}>
+      {/* Sticky chips once the panel scrolls away */}
+      <div ref={sentinelRef} aria-hidden="true" className="mt-4 h-px" />
+      <nav ref={navRef} aria-label="Deal categories" className={`sticky top-0 z-40 transition-[background-color,box-shadow,opacity] duration-300 ${stuck ? "bg-white/95 opacity-100 shadow-[0_1px_0_var(--color-line),0_8px_24px_rgba(34,20,15,.08)] backdrop-blur-md" : "pointer-events-none opacity-0"}`}>
         <div className="wrap">
-          <div ref={barRef} className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 py-2.5 sm:gap-2.5">
-            {groups.map((g) => (
-              <button
-                key={g.id}
-                type="button"
-                data-target={g.id}
-                aria-current={active === g.id ? "true" : undefined}
-                onClick={() => document.getElementById(`deals-${g.id}`)?.scrollIntoView({ behavior: smooth() })}
-                style={{ opacity: g.shown.length ? 1 : 0.4 }}
-                className={`flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[13px] font-semibold transition duration-300 ease-brand sm:text-sm ${
-                  active === g.id ? "bg-yellow text-maroon-dark shadow-[0_6px_16px_rgba(242,174,0,.4)]" : "bg-white text-ink shadow-[0_0_0_1px_var(--color-line)] hover:text-maroon"
-                }`}
-              >
-                {g.name}
-                <span className={`rounded-full px-1.5 text-[10.5px] font-bold leading-[18px] ${active === g.id ? "bg-maroon text-white" : "bg-cream text-muted"}`}>{g.shown.length}</span>
-              </button>
-            ))}
+          <div ref={barRef} className="no-scrollbar relative -mx-1 overflow-x-auto px-1 py-2.5">
+            <div className="mx-auto flex w-max gap-2 sm:gap-2.5">
+              {groups.map((g) => (
+                <button key={g.id} type="button" data-target={g.id} aria-current={active === g.id ? "true" : undefined} tabIndex={stuck ? 0 : -1} onClick={() => goTo(g.id)}
+                  style={{ opacity: g.shown.length ? 1 : 0.4 }}
+                  className={`flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[13px] font-semibold transition duration-300 ease-brand sm:px-5 sm:py-2.5 sm:text-[15px] ${
+                    active === g.id ? "bg-maroon text-white shadow-[0_6px_16px_rgba(107,13,17,.3)]" : "bg-white text-ink shadow-[0_0_0_1px_var(--color-line)] hover:text-maroon"
+                  }`}>
+                  {g.name}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
       <SearchButton show={stuck} onClick={goToSearch} label="Search deals" />
       <BackToTop show={stuck} />
 
-      <div className="wrap">
-        <label ref={searchRef} htmlFor="deal-q" className="mt-4 flex items-center gap-3 rounded-[14px] bg-white py-1 pl-4 pr-1 shadow-[0_0_0_1px_var(--color-line)] transition focus-within:shadow-[0_0_0_2px_var(--color-yellow),0_10px_26px_rgba(242,174,0,.18)] sm:mt-5 sm:pl-[18px]">
-          <Icon name="search" className="size-[22px] flex-none text-muted" />
-          <span className="sr-only">Search deals</span>
-          <input id="deal-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search deals: broast, pizza, chai…" autoComplete="off" className="min-w-0 flex-1 bg-transparent py-3.5 text-base outline-none placeholder:text-[#a99a90]" />
-          {q && <button type="button" onClick={() => setQ("")} className="rounded-[10px] px-3.5 py-2.5 text-[13px] font-semibold text-muted hover:bg-cream hover:text-maroon">Clear</button>}
-        </label>
-
-        {groups.map((g) => g.shown.length > 0 && (
-          <section key={g.id} id={`deals-${g.id}`} aria-labelledby={`deals-${g.id}-h`} className="scroll-mt-[64px] pt-8 sm:pt-12">
-            <h2 id={`deals-${g.id}-h`} className="heading mb-5 text-[clamp(28px,3.4vw,40px)] after:mt-3 after:block after:h-[5px] after:w-[90px] after:rounded after:bg-yellow">
-              <small className="mb-0.5 block font-script text-2xl text-maroon">{g.script}</small>
-              {g.name}
-            </h2>
-            <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-5 xl:grid-cols-3 xl:gap-[22px]">
-              {g.shown.map((d) => <MenuItemCard key={d.id} item={d} />)}
+      <div className="wrap -mt-[60px]">
+        {groups.map((g, gi) => g.shown.length > 0 && (
+          <section key={g.id} id={`deals-${g.id}`} aria-labelledby={`deals-${g.id}-h`} className="scroll-mt-[64px] pt-9 sm:pt-14">
+            <div className="flex items-center gap-3">
+              <span aria-hidden="true" className="h-9 w-1.5 flex-none rounded-full bg-yellow sm:h-11" />
+              <h2 id={`deals-${g.id}-h`} className="min-w-0">
+                <small className="block font-script text-lg leading-none text-maroon sm:text-[22px]">{g.script}</small>
+                <span className="block font-display text-[26px] uppercase leading-none tracking-wide sm:text-[36px]">{g.name}</span>
+              </h2>
+              <span className="mt-auto grid size-7 flex-none place-items-center rounded-full bg-white text-[13px] font-bold text-muted shadow-[0_0_0_1px_var(--color-line)] sm:size-8">{g.shown.length}</span>
+            </div>
+            {g.banner && <GroupBanner banner={g.banner} icon={GROUP_ICONS[g.icon]} />}
+            <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 sm:gap-x-5 sm:gap-y-3 md:grid-cols-3 xl:grid-cols-4">
+              {g.shown.map((d) => <DealCard key={d.id} deal={d} tone={gi % 2 ? "maroon" : "light"} />)}
             </div>
           </section>
         ))}

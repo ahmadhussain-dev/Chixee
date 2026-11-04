@@ -4,7 +4,7 @@
 // The server recalculates every order total from this file, so prices can't be changed from the browser.
 
 // NOTE: soft drink flavours follow the drink photos; confirm with the owner which ones are stocked.
-import { DEAL_GROUPS, DEAL_SPECS } from "@/data/deals";
+import { DEAL_GROUPS as RAW_GROUPS, DEAL_SPECS } from "@/data/deals";
 
 const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
 
@@ -105,7 +105,7 @@ export const priceOf = (item, size) =>
   item.sizes ? item.sizes[size] ?? Object.values(item.sizes)[0] : item.p;
 
 // Deals (data/deals.js) become orderable items too, with their contents and the menu total they save on.
-export { DEAL_GROUPS };
+
 export const DEALS = DEAL_SPECS.map((d) => {
   const parts = d.parts
     .map(([id, qty, size]) => ({ item: MENU_BY_ID[id], qty, size }))
@@ -123,6 +123,13 @@ export const DEALS = DEAL_SPECS.map((d) => {
     art: parts.map((x) => x.item.img).filter(Boolean),
   };
 });
+
+// Group banners get the cut-out photos of the items they name.
+export const DEAL_GROUP_LIST = RAW_GROUPS.map((g) => ({
+  ...g,
+  banner: g.banner ? { ...g.banner, artImgs: g.banner.art.map((id) => MENU_BY_ID[id]?.img).filter(Boolean) } : null,
+}));
+export { DEAL_GROUP_LIST as DEAL_GROUPS };
 
 export const ITEM_BY_ID = { ...MENU_BY_ID, ...Object.fromEntries(DEALS.map((d) => [d.id, d])) };
 

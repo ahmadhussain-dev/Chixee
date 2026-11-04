@@ -67,6 +67,20 @@ export default function DealsHero({ slides }) {
     >
       {slides.map((d, i) => {
         const active = i === cur;
+        // Promo slide (e.g. "Open till 2 AM"): a full-width photo with the message on a see-through gradient.
+        if (d.promo) {
+          return (
+            <article key={d.id} aria-hidden={!active} className={`absolute inset-0 transition-[opacity,visibility] duration-700 ease-brand ${active ? "visible opacity-100" : "invisible opacity-0"}`}>
+              <Image src={d.img} alt="" fill priority={i === 0} sizes="(max-width: 1280px) 100vw, 1240px" style={{ objectPosition: d.pos || "center 30%" }} className={`object-cover transition-transform duration-[7000ms] ease-linear ${active ? "scale-100" : "scale-110"}`} />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(107,13,17,.9)_0%,rgba(140,18,24,.6)_45%,rgba(163,22,27,0)_80%)]" />
+              <div className="relative z-[2] flex h-full flex-col justify-center gap-1 p-5 [text-shadow:0_2px_12px_rgba(60,6,9,.45)] sm:p-10 lg:p-12">
+                <span className="font-script text-[22px] text-yellow sm:text-3xl">{d.kicker}</span>
+                <h2 className="font-display text-[clamp(38px,6vw,72px)] uppercase leading-[.9]">{d.title}<br className="sm:hidden" /> <span className="text-yellow">{d.highlight}</span></h2>
+                <p className="mt-1 text-[13px] text-white/90 sm:text-base">{d.text}</p>
+              </div>
+            </article>
+          );
+        }
         return (
           <article key={d.id} aria-hidden={!active} className={`absolute inset-0 transition-[opacity,visibility] duration-700 ease-brand ${active ? "visible opacity-100" : "invisible opacity-0"}`}>
             {d.img ? (
