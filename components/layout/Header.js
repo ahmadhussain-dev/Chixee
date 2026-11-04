@@ -58,6 +58,21 @@ function LocationChip() {
   );
 }
 
+// Round avatar: the user's profile photo if they have one, otherwise the first letter of their name on maroon.
+function Avatar({ user }) {
+  const [broken, setBroken] = useState(false);
+  const letter = (user.name || user.email || "?").trim()[0]?.toUpperCase();
+  return (
+    <span className="relative grid size-10 flex-none place-items-center overflow-hidden rounded-full bg-maroon font-display text-xl leading-none text-yellow ring-2 ring-white shadow-[0_4px_12px_rgba(107,13,17,.25)]">
+      {letter}
+      {user.image && !broken && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={user.image} alt="" width={40} height={40} referrerPolicy="no-referrer" onError={() => setBroken(true)} className="absolute inset-0 size-full object-cover" />
+      )}
+    </span>
+  );
+}
+
 function UserMenu() {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
@@ -84,13 +99,17 @@ function UserMenu() {
   const first = session.user.name?.split(" ")[0] || "Account";
   return (
     <div ref={ref} className="relative order-2 md:order-none">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex items-center gap-2 rounded-xl border-2 border-maroon px-3 py-2 font-semibold text-maroon transition hover:bg-white/45">
-        <Icon name="user" />
-        <span className="max-w-[90px] truncate">{first}</span>
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={`Account menu for ${first}`} className="flex items-center gap-2 rounded-full p-0.5 pr-2 font-semibold text-maroon transition hover:bg-white/45 sm:pr-3">
+        <Avatar user={session.user} />
+        <span className="hidden max-w-[90px] truncate sm:inline">{first}</span>
         <Icon name="down" className="size-4" />
       </button>
       {open && (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-52 animate-pop overflow-hidden rounded-2xl bg-white py-2 shadow-[0_20px_50px_rgba(0,0,0,.18)]">
+        <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-60 animate-pop overflow-hidden rounded-2xl bg-white py-2 shadow-[0_20px_50px_rgba(0,0,0,.18)]">
+          <div className="flex items-center gap-3 border-b border-line px-4 pb-3 pt-1.5">
+            <Avatar user={session.user} />
+            <span className="min-w-0 leading-tight"><b className="block truncate">{session.user.name}</b><small className="block truncate text-muted">{session.user.email}</small></span>
+          </div>
           <Link href="/orders" onClick={() => setOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-cream"><Icon name="box" className="size-[18px] text-maroon" />My orders</Link>
           {session.user.role === "admin" && (
             <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-cream"><Icon name="gear" className="size-[18px] text-maroon" />Admin panel</Link>
