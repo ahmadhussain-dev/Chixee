@@ -7,6 +7,7 @@ import { SITE, formatTime } from "@/data/site";
 const SOCIALS = [
   ["facebook", SITE.facebook, "Facebook"],
   ["instagram", SITE.instagram, "Instagram"],
+  ["tiktok", SITE.tiktok, "TikTok"],
   ["whatsapp", SITE.whatsapp, "WhatsApp"],
 ];
 

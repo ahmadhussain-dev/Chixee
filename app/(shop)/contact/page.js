@@ -1,4 +1,5 @@
 import Icon from "@/components/ui/Icon";
+import SocialIcon, { SOCIAL_STYLE } from "@/components/ui/SocialIcon";
 import { SITE } from "@/data/site";
 
 export const metadata = {
@@ -9,8 +10,10 @@ export const metadata = {
 
 const ROWS = [
   ["phone", "UAN", SITE.uan, "tel:111341111"],
-  ["phone", "Call / WhatsApp", SITE.phone, `https://wa.me/${SITE.phoneIntl.replace("+", "")}`],
-  ["fb", "Facebook", "Chixee", SITE.facebook],
+  ["whatsapp", "WhatsApp", SITE.phone, SITE.whatsapp],
+  ["facebook", "Facebook", "chixeefastfood", SITE.facebook],
+  ["instagram", "Instagram", "@chixee_broast", SITE.instagram],
+  ["tiktok", "TikTok", "@chixee_pk", SITE.tiktok],
   ["pin", SITE.branch.name, SITE.branch.address, null],
 ];
 
@@ -23,13 +26,17 @@ export default function ContactPage() {
         {ROWS.map(([icon, label, value, href]) => {
           const inner = (
             <>
-              <span className="grid size-12 flex-none place-items-center rounded-xl bg-yellow text-maroon-dark"><Icon name={icon} className="size-6" /></span>
+              {SOCIAL_STYLE[icon] ? (
+                <span className={`grid size-12 flex-none place-items-center rounded-full ${SOCIAL_STYLE[icon]}`}><SocialIcon name={icon} className="size-6" /></span>
+              ) : (
+                <span className="grid size-12 flex-none place-items-center rounded-xl bg-yellow text-maroon-dark"><Icon name={icon} className="size-6" /></span>
+              )}
               <span><small className="block text-muted">{label}</small><b>{value}</b></span>
             </>
           );
           return (
             <li key={label}>
-              {href ? <a href={href} className="card flex items-center gap-4 p-5 transition hover:-translate-y-0.5">{inner}</a> : <div className="card flex items-center gap-4 p-5">{inner}</div>}
+              {href ? <a href={href} {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="card flex items-center gap-4 p-5 transition hover:-translate-y-0.5">{inner}</a> : <div className="card flex items-center gap-4 p-5">{inner}</div>}
             </li>
           );
         })}
