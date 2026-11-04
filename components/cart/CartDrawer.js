@@ -3,14 +3,14 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Icon from "@/components/ui/Icon";
 import ItemThumb from "@/components/menu/ItemThumb";
-import QtyStepper from "@/components/ui/QtyStepper";
+import PopularItems from "@/components/checkout/PopularItems";
 import { useCart } from "@/context/CartContext";
 import { useLocation } from "@/context/LocationContext";
 import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
 
 export default function CartDrawer() {
-  const { lines, subtotal, count, setLineQty, drawerOpen, setDrawerOpen } = useCart();
+  const { lines, subtotal, count, setLineQty, clear, drawerOpen, setDrawerOpen } = useCart();
   const { location, setModalOpen } = useLocation();
   const router = useRouter();
   const closeRef = useRef(null);
@@ -39,8 +39,13 @@ export default function CartDrawer() {
         inert={!drawerOpen}
         className={`pointer-events-auto absolute inset-y-0 right-0 flex w-[min(420px,100%)] flex-col bg-white shadow-[-20px_0_50px_rgba(0,0,0,.18)] transition-[transform,visibility] duration-500 ease-brand ${drawerOpen ? "visible translate-x-0" : "invisible translate-x-[105%]"}`}
       >
-        <div className="flex items-center justify-between border-b border-line px-5 py-5">
-          <h2 className="heading text-[26px]">Your Order</h2>
+        <div className="flex items-center gap-3 border-b border-line bg-cream px-5 py-4">
+          <h2 className="heading mr-auto text-[24px]">Your Cart</h2>
+          {!!count && (
+            <button type="button" onClick={clear} className="rounded-lg px-2 py-1.5 text-sm font-semibold text-maroon underline-offset-4 hover:underline">
+              Clear cart
+            </button>
+          )}
           <button ref={closeRef} type="button" aria-label="Close cart" onClick={() => setDrawerOpen(false)} className="grid size-10 place-items-center rounded-[10px] transition duration-300 hover:rotate-90 hover:bg-cream">
             <Icon name="x" className="size-[22px]" />
           </button>
@@ -60,7 +65,7 @@ export default function CartDrawer() {
           <span className="font-semibold underline">Change</span>
         </button>
 
-        <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-5 py-3">
+        <div className="flex flex-1 flex-col overflow-y-auto px-5 py-2">
           {!lines.length ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-2.5 p-8 text-center text-muted">
               <Icon name="bag" className="size-[72px] animate-float text-yellow" />
@@ -68,26 +73,39 @@ export default function CartDrawer() {
               Add a broast or two and it will show up here.
             </div>
           ) : (
-            lines.map((l) => (
-              <div key={l.key} className="grid animate-slidein grid-cols-[60px_1fr_auto] items-center gap-3 rounded-2xl bg-cream p-2.5">
-                <div className="relative size-[60px] overflow-hidden rounded-[10px] bg-yellow"><ItemThumb item={l.item} small sizes="60px" /></div>
-                <div className="min-w-0">
-                  <h3 className="text-sm font-semibold leading-snug">{l.item.n}</h3>
-                  <div className="text-[13px] tabular-nums text-muted">{l.size ? `${l.size} · ` : ""}{formatPKR(l.price)}</div>
-                  {l.note && <p className="truncate text-xs italic text-muted">“{l.note}”</p>}
+            <>
+              {lines.map((l) => (
+                <div key={l.key} className="grid animate-slidein grid-cols-[56px_1fr] gap-3 border-b border-line py-3.5">
+                  <div className="relative size-14 overflow-hidden rounded-xl bg-yellow"><ItemThumb item={l.item} small sizes="56px" /></div>
+                  <div className="min-w-0">
+                    <h3 className="text-[14.5px] font-bold uppercase leading-snug">{l.item.n}</h3>
+                    {l.size && Object.keys(l.item.sizes || {}).length > 1 && <p className="text-[13px] text-muted">{l.size}</p>}
+                    {l.note && <p className="truncate text-xs italic text-muted">“{l.note}”</p>}
+                    <p className="text-right text-[15px] font-bold tabular-nums">{formatPKR(l.total)}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <button type="button" aria-label={`Remove one ${l.item.n}`} onClick={() => setLineQty(l.key, l.qty - 1)} className="grid size-8 place-items-center rounded-full bg-maroon text-lg leading-none text-white transition hover:bg-maroon-dark">−</button>
+                      <output className="grid h-8 min-w-9 place-items-center rounded-lg px-2 text-sm font-bold tabular-nums ring-1 ring-line">{l.qty}</output>
+                      <button type="button" aria-label={`Add one ${l.item.n}`} onClick={() => setLineQty(l.key, l.qty + 1)} className="grid size-8 place-items-center rounded-full bg-maroon text-lg leading-none text-white transition hover:bg-maroon-dark">+</button>
+                      <button type="button" aria-label={`Remove ${l.item.n} from cart`} onClick={() => setLineQty(l.key, 0)} className="ml-auto grid size-9 place-items-center rounded-lg text-muted transition hover:bg-cream hover:text-maroon">
+                        <Icon name="trash" className="size-[18px]" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <QtyStepper small qty={l.qty} onChange={(q) => setLineQty(l.key, q)} />
+              ))}
+              <div className="pb-2">
+                <PopularItems />
               </div>
-            ))
+            </>
           )}
         </div>
 
         <div className="grid gap-2.5 border-t border-line px-5 py-4">
           <div className="flex justify-between text-sm tabular-nums text-muted"><span>Subtotal</span><span>{formatPKR(subtotal)}</span></div>
           {!pickup && (
-            <div className="flex justify-between text-sm tabular-nums text-muted"><span>Delivery</span><span>{fee === null ? "Choose area" : formatPKR(fee)}</span></div>
+            <div className="flex justify-between text-sm tabular-nums text-muted"><span>Delivery Charges</span><span>{fee === null ? "Choose area" : formatPKR(fee)}</span></div>
           )}
-          <div className="flex justify-between text-lg font-bold tabular-nums"><span>Total</span><span>{formatPKR(subtotal + (fee || 0))}</span></div>
+          <div className="flex justify-between border-t border-line pt-2.5 text-lg font-bold tabular-nums"><span>Grand total</span><span>{formatPKR(subtotal + (fee || 0))}</span></div>
           <button
             type="button"
             disabled={!count}
