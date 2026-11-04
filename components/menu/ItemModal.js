@@ -189,15 +189,20 @@ export default function ItemModal({ item, onClose }) {
                 <textarea id="item-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} rows={3} placeholder="e.g. No mayo, extra spicy" className="input resize-none" />
               </div>
 
-              <div className="grid gap-2">
-                <label htmlFor="item-unavailable" className="text-lg font-bold">If this item is not available</label>
-                <div className="relative">
-                  <select id="item-unavailable" value={ifUnavailable} onChange={(e) => setIfUnavailable(e.target.value)} className="input w-full appearance-none pr-10">
-                    {Object.entries(IF_UNAVAILABLE).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                  </select>
-                  <Icon name="down" className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
+              <fieldset className="grid gap-2">
+                <legend className="mb-2 text-lg font-bold">If this item is not available</legend>
+                <div className="grid gap-1.5" role="radiogroup">
+                  {Object.entries(IF_UNAVAILABLE).map(([k, v]) => (
+                    <label key={k} className={`flex cursor-pointer items-center gap-3 rounded-xl px-3.5 py-3 text-[15px] ring-1 transition ${ifUnavailable === k ? "bg-yellow-soft font-semibold ring-yellow" : "ring-line hover:bg-cream"}`}>
+                      <input type="radio" name="if-unavailable" value={k} checked={ifUnavailable === k} onChange={() => setIfUnavailable(k)} className="peer sr-only" />
+                      <span aria-hidden="true" className={`grid size-5 flex-none place-items-center rounded-full border-2 transition peer-focus-visible:ring-2 peer-focus-visible:ring-maroon ${ifUnavailable === k ? "border-maroon" : "border-ink/40"}`}>
+                        {ifUnavailable === k && <span className="size-2 rounded-full bg-maroon" />}
+                      </span>
+                      {v}
+                    </label>
+                  ))}
                 </div>
-              </div>
+              </fieldset>
             </div>
           </div>
         </div>
