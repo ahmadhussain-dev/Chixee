@@ -33,11 +33,14 @@ export default function Footer() {
             </address>
           </div>
 
-          {/* Contact (one number, no icons) and social links */}
+          {/* Contact (UAN + WhatsApp number, no icons) and social links */}
           <div className="col-span-2 grid grid-cols-2 gap-4 sm:gap-10 lg:col-span-1 lg:block">
             <div>
               <h2 className="mb-2 font-display text-lg font-normal sm:mb-3 sm:text-2xl">Contact Us</h2>
+              <small className="block text-xs text-on-night-muted">UAN</small>
               <a href={`tel:${SITE.uan.replace(/\D/g, "")}`} className="text-lg font-bold tabular-nums text-yellow transition hover:text-white sm:text-xl">{SITE.uan}</a>
+              <small className="mt-2 block text-xs text-on-night-muted">Call / WhatsApp</small>
+              <a href={`tel:${SITE.phoneIntl}`} className="whitespace-nowrap text-lg font-bold tabular-nums text-yellow transition hover:text-white sm:text-xl">{SITE.phone}</a>
             </div>
             <div>
               <h2 className="mb-2.5 font-display text-lg font-normal sm:mb-3 sm:text-2xl lg:mt-7">Follow Us</h2>
