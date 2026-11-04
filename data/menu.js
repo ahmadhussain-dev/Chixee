@@ -10,7 +10,7 @@ const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
 
 export const MENU = [
   { id: "broast", name: "Broast", script: "Authentic", glyph: "drum", note: "Leg, thigh, wing and chest pieces, injected and pressure fried.", items: [
-    { n: "Quarter Broast", d: "2 Pc chicken (leg & thigh), French fries, bun, 1 reg garlic", p: 750, img: "/images/menu-cut/quarter-broast.webp" },
+    { n: "Quarter Broast", d: "2 Pc chicken (leg & thigh), French fries, bun, 1 reg garlic", p: 750, img: "/images/menu/quarterbroast.jpg" , loading:"eager" },
     { n: "Half Broast", d: "4 Pc chicken (leg, thigh, wing, chest), French fries, 2 buns, 1 reg garlic, 1 spicy garlic", p: 1450, tag: "Popular", img: "/images/menu-cut/half-broast.webp", popular: true },
     { n: "Full Broast", d: "8 Pc chicken (2 of each piece), French fries, 4 buns, 2 reg garlic, 2 spicy garlic", p: 2750, tag: "Family", img: "/images/menu-cut/full-broast.webp", popular: true },
   ]},
@@ -20,10 +20,10 @@ export const MENU = [
   ]},
   // NOTE: Small pizza prices are placeholders until the owner confirms them.
   { id: "pizza", name: "Pizza", script: "Middle Eastern herb", glyph: "pizza", note: "Every pizza comes with our special Middle Eastern herb.", items: [
-    { n: "Chixie Special Full Loaded", d: "Special Middle Eastern herb", sizes: { Small: 950, Regular: 1450, Large: 2100 }, img: "", tag: "Signature", popular: true },
-    { n: "Crown Crust", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu-cut/crown-crust.webp" },
-    { n: "Peri Peri", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu-cut/peri-peri-pizza.webp" },
-    { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "" },
+    { n: "Chixie Special Full Loaded", d: "Special Middle Eastern herb", sizes: { Small: 950, Regular: 1450, Large: 2100 }, img: "/images/menu/specialloadedpizza.jpg", tag: "Signature", popular: true },
+    { n: "Crown Crust", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu/crowncrust.jpg" },
+    { n: "Peri Peri", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu/periperipizza.jpg" },
+    { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "/images/menu/zataar.jpg" },
   ]},
   { id: "burgers", name: "Burgers & Slices", short: "Burgers", script: "Stacked", glyph: "burger", items: [
     { n: "Majestic Double", meal: true, d: "Double beef patty burger", p: 750, tag: "Beef", img: "/images/menu-cut/majestic-burger.webp", popular: true },
@@ -32,17 +32,21 @@ export const MENU = [
     { n: "Chipotle Wrap", meal: true, d: "Grilled chicken wrapped with smoky chipotle", p: 580, img: "/images/menu-cut/chipotle-wrap.webp" },
     { n: "Club Sandwich", meal: true, d: "Toasted triple-layer chicken club", p: 450, img: "/images/menu-cut/club-sandwich.webp" },
     { n: "ChixDoner with Cheese", meal: true, d: "Chixee doner with melted cheese", p: 380, img: "/images/menu-cut/chixdoner-with-cheese.webp" },
-    { n: "ChixDoner without Cheese", meal: true, d: "Chixee doner, classic", p: 320 },
+    { n: "ChixDoner without Cheese", meal: true, d: "Chixee doner, classic", p: 320 ,
+      img: "/images/menu/donnerwithoutchese.jpg"
+     },
     { n: "Quesadilla", meal: true, d: "Grilled tortilla with chicken and cheese", p: 550, img: "/images/menu-cut/quesadilla.webp" },
-    { n: "Schnitzel", meal: true, d: "Golden crumbed chicken schnitzel", p: 450, img: "" },
-    { n: "French Fries (Regular)", d: "Crispy salted fries", p: 220, glyph: "fries" },
+    { n: "Schnitzel", meal: true, d: "Golden crumbed chicken schnitzel", p: 450, img: "/images/menu/schnitzel.jpg" },
+    { n: "French Fries (Regular)", d: "Crispy salted fries", p: 220, glyph: "fries",
+      img: "/images/menu/fries.jpg"
+     },
   ]},
   { id: "chai", name: "Chaialogy", script: "It’s science", glyph: "cup", note: "Chai isn’t just a drink, it’s science.", items: [
     { n: "Chaialogy Special", d: "Our signature house chai", p: 180, tag: "House", img: "/images/menu-cut/chaialogy-special-chai.webp", popular: true },
-    { n: "Karak Chai", d: "Strong, slow-brewed karak", p: 150, img: "/images/menu-cut/karak-chai.webp" },
-    { n: "Doodh Patti", d: "Milk-brewed, rich and creamy", p: 150 },
+    { n: "Karak Chai", d: "Strong, slow-brewed karak", p: 150, img: "/images/menu/karakchai.jpg" },
+    { n: "Doodh Pati.jpg", d: "Milk-brewed, rich and creamy", p: 150 , img: "/images/menu/doodhpati.jpg"},
     { n: "Chocolate Chai", d: "Chai with a chocolate finish", p: 180, img: "/images/menu-cut/chocolate-chai.webp" },
-    { n: "Adrak Chai", d: "Ginger-spiced chai", p: 180, img: "/images/menu-cut/adrak-chai.webp" },
+    { n: "Adrak Chai", d: "Ginger-spiced chai", p: 180, img: "/images/menu/jingertea.jpg" },
   ]},
   { id: "desserts", name: "Cookies & Desserts", short: "Desserts", script: "Sweet finish", glyph: "cake", items: [
     { n: "Fudge Brownie", d: "Dense chocolate fudge brownie", p: 320, img: "/images/menu-cut/fudge-brownie.webp" },
@@ -56,15 +60,15 @@ export const MENU = [
     { n: "Mint Margarita", d: "Fresh mint and lemon, blended icy", p: 280, img: "/images/menu-cut/mint-margarita.webp" },
     { n: "Blue Lagoon Mocktail", d: "Blue curaçao mocktail with lemon", p: 260, img: "/images/menu-cut/blue-lagoon-mocktail.webp" },
     { n: "Lemonade", d: "Fresh squeezed lemonade", p: 220, img: "/images/menu-cut/lemonade.webp" },
-    { n: "Diet Zeera Masala", d: "Spiced cumin soda", p: 280 },
-    { n: "Regular Drink", d: "Soft drink, regular", p: 100, flavours: SOFT_DRINKS, img: "/images/menu-cut/regular-drink.webp" },
-    { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, flavours: SOFT_DRINKS, img: "/images/menu-cut/drink-500-ml.webp" },
+    { n: "Diet Sprite 500ml", d: "Spiced cumin soda", p: 280, img: "/images/menu/dietsprite500ml.jpg" },
+    { n: "Regular Drink", d: "Soft drink, regular", p: 100, flavours: SOFT_DRINKS, img: "/images/menu/regulardrinkspack.jpg" },
+    { n: "Drink 500 ml", d: "Soft drink, 500 ml bottle", p: 130, flavours: SOFT_DRINKS, img: "/images/menu/Drink500ml.jpg" },
     { n: "Drinking Water", d: "Mineral water", sizes: { "½ Litre": 70, "1.5 Litre": 160 }, img: "/images/menu-cut/drinking-water-1-5-litre.webp" },
   ]},
   { id: "addons", name: "Add-ons", script: "Make it yours", glyph: "plus", items: [
-    { n: "Cheese Slice", d: "Add to any burger or doner", p: 70, img: "/images/menu-cut/cheese-slice.webp" },
-    { n: "Garlic Sauce", d: "Our regular garlic dip", p: 70, img: "/images/menu-cut/garlic-sauce.webp" },
-    { n: "Spicy Garlic", d: "Garlic dip with a kick", p: 70, img: "/images/menu-cut/spicy-garlic.webp" },
+    { n: "Cheese Slice", d: "Add to any burger or doner", p: 70, img: "/images/menu/cheeseslice.jpg" },
+    { n: "Garlic Sauce", d: "Our regular garlic dip", p: 70, img: "/images/menu/garlicsauce.jpg" },
+    { n: "Spicy Garlic", d: "Garlic dip with a kick", p: 70, img: "/images/menu/spicygarlic.jpg" },
   ]},
 ];
 
