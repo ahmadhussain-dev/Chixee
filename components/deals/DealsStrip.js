@@ -12,7 +12,8 @@ const HOT = [...DEALS].sort((a, b) => (b.featured ? 2 : b.group === "today" ? 1 
 
 // Home page "Hot Deals": heading with a link to /deals and a row of deal cards that keeps gliding
 // left to right. It stops while the cursor is over it (or a finger is on it, or a card has focus).
-// The list is drawn twice so the loop is seamless; the second copy is hidden from screen readers.
+// The list is drawn twice so the loop is seamless. The second copy is hidden from screen readers and
+// skipped by Tab, but stays clickable (not `inert`), since it is the copy on screen half of the time.
 export default function DealsStrip() {
   const [held, setHeld] = useState(false);
   const resume = useRef(null);
@@ -63,9 +64,9 @@ export default function DealsStrip() {
       >
         <div className="flex w-max animate-marquee-right motion-reduce:animate-none" style={{ animationPlayState: held ? "paused" : "running", animationDuration: `${HOT.length * 8}s` }}>
           {[0, 1].map((copy) => (
-            <div key={copy} className="flex flex-none gap-3.5 pr-3.5" aria-hidden={copy ? true : undefined} inert={copy ? true : undefined}>
+            <div key={copy} className="flex flex-none gap-3.5 pr-3.5" aria-hidden={copy ? true : undefined}>
               {HOT.map((d, i) => (
-                <DealMiniCard key={d.id} deal={d} tone={i % 2 ? "cream" : "maroon"} className="w-[300px] flex-none sm:w-[340px]" />
+                <DealMiniCard key={d.id} deal={d} tabIndex={copy ? -1 : undefined} tone={i % 2 ? "cream" : "maroon"} className="w-[300px] flex-none sm:w-[340px]" />
               ))}
             </div>
           ))}

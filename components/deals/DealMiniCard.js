@@ -10,13 +10,14 @@ const BADGE_ICON = { today: Clock, weekly: CalendarDays, combos: Hamburger, fami
 // Compact deal card for the home "Hot Deals" row. tone "maroon" (red body) or "cream" (light body);
 // text on the left, the food on a yellow arc on the right. The featured "Deal of the day" glows.
 // Tapping it goes to that deal's category on /deals (e.g. /deals#deals-weekly).
-export default function DealMiniCard({ deal, tone = "maroon", className = "" }) {
+export default function DealMiniCard({ deal, tone = "maroon", className = "", tabIndex }) {
   const maroon = tone === "maroon";
   const star = deal.badge === "Deal of the day";
   const BIcon = star ? Crown : BADGE_ICON[deal.group];
   return (
     <Link
       href={`/deals#deals-${deal.group}`}
+      tabIndex={tabIndex}
       aria-label={`${deal.n}, ${formatPKR(deal.p)}. See ${deal.badge || "this deal"} on the deals page`}
       className={`group relative flex min-h-[176px] overflow-hidden rounded-[22px] text-left transition duration-300 ease-brand hover:-translate-y-1 ${
         maroon ? "bg-[linear-gradient(135deg,#c4262c,#8c1218_70%)] text-white" : "bg-[#fdf1dc] text-ink"
