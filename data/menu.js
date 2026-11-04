@@ -20,10 +20,10 @@ export const MENU = [
   ]},
   // NOTE: Small pizza prices are placeholders until the owner confirms them.
   { id: "pizza", name: "Pizza", script: "Middle Eastern herb", glyph: "pizza", note: "Every pizza comes with our special Middle Eastern herb.", items: [
-    { n: "Chixie Special Full Loaded", d: "Special Middle Eastern herb", sizes: { Small: 950, Regular: 1450, Large: 2100 }, img: "", tag: "Signature", popular: true },
+    { n: "Chixie Special Full Loaded", d: "Special Middle Eastern herb", sizes: { Small: 950, Regular: 1450, Large: 2100 }, img: "/images/menu-cut/special-loaded-pizza.webp", tag: "Signature", popular: true },
     { n: "Crown Crust", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu-cut/crown-crust.webp" },
     { n: "Peri Peri", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu-cut/peri-peri-pizza.webp" },
-    { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "" },
+    { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "/images/menu-cut/zaatar-special.webp" },
   ]},
   { id: "burgers", name: "Burgers & Slices", short: "Burgers", script: "Stacked", glyph: "burger", items: [
     { n: "Majestic Double", meal: true, d: "Double beef patty burger", p: 750, tag: "Beef", img: "/images/menu-cut/majestic-burger.webp", popular: true },
@@ -32,10 +32,10 @@ export const MENU = [
     { n: "Chipotle Wrap", meal: true, d: "Grilled chicken wrapped with smoky chipotle", p: 580, img: "/images/menu-cut/chipotle-wrap.webp" },
     { n: "Club Sandwich", meal: true, d: "Toasted triple-layer chicken club", p: 450, img: "/images/menu-cut/club-sandwich.webp" },
     { n: "ChixDoner with Cheese", meal: true, d: "Chixee doner with melted cheese", p: 380, img: "/images/menu-cut/chixdoner-with-cheese.webp" },
-    { n: "ChixDoner without Cheese", meal: true, d: "Chixee doner, classic", p: 320 },
+    { n: "ChixDoner without Cheese", meal: true, d: "Chixee doner, classic", p: 320, img: "/images/menu-cut/chixdoner-without-cheese.webp" },
     { n: "Quesadilla", meal: true, d: "Grilled tortilla with chicken and cheese", p: 550, img: "/images/menu-cut/quesadilla.webp" },
-    { n: "Schnitzel", meal: true, d: "Golden crumbed chicken schnitzel", p: 450, img: "" },
-    { n: "French Fries (Regular)", d: "Crispy salted fries", p: 220, glyph: "fries" },
+    { n: "Schnitzel", meal: true, d: "Golden crumbed chicken schnitzel", p: 450, img: "/images/menu-cut/schnitzel.webp" },
+    { n: "French Fries (Regular)", d: "Crispy salted fries", p: 220, img: "/images/menu-cut/french-fries.webp" },
   ]},
   { id: "chai", name: "Chaialogy", script: "It’s science", glyph: "cup", note: "Chai isn’t just a drink, it’s science.", items: [
     { n: "Chaialogy Special", d: "Our signature house chai", p: 180, tag: "House", img: "/images/menu-cut/chaialogy-special-chai.webp", popular: true },
