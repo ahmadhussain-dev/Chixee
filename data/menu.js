@@ -12,7 +12,7 @@ export const MENU = [
     { n: "Half Broast", d: "4 Pc chicken (leg, thigh, wing, chest), French fries, 2 buns, 1 reg garlic, 1 spicy garlic", p: 1450, tag: "Popular", img: "/images/menu-cut/half-broast.webp", popular: true },
     { n: "Full Broast", d: "8 Pc chicken (2 of each piece), French fries, 4 buns, 2 reg garlic, 2 spicy garlic", p: 2750, tag: "Family", img: "/images/menu-cut/full-broast.webp", popular: true },
   ]},
-  { id: "fish", name: "Fish n Chips", script: "River Saul", glyph: "drum", note: "A delicate freshwater Indus River fish with a mild, buttery flavour.", items: [
+  { id: "fish", name: "Fish n Chips", script: "River Saul", glyph: "fish", note: "A delicate freshwater Indus River fish with a mild, buttery flavour.", items: [
     { n: "Fish n Chips (Half)", d: "River Saul fish with fries, bun and dip sauces", p: 2500, img: "/images/menu-cut/fish-n-chips-half.webp", popular: true },
     { n: "Fish n Chips (Full)", d: "River Saul fish with fries, bun and dip sauces", p: 4800, tag: "Share", img: "/images/menu-cut/fish-n-chips-full.webp" },
   ]},
@@ -23,7 +23,7 @@ export const MENU = [
     { n: "Peri Peri", d: "Special Middle Eastern herb", sizes: { Small: 800, Regular: 1200, Large: 1800 }, img: "/images/menu-cut/peri-peri-pizza.webp" },
     { n: "Zaatar Special", d: "Thin crust, special Middle Eastern herb", p: 850, img: "" },
   ]},
-  { id: "burgers", name: "Burgers & Slices", script: "Stacked", glyph: "burger", items: [
+  { id: "burgers", name: "Burgers & Slices", short: "Burgers", script: "Stacked", glyph: "burger", items: [
     { n: "Majestic Double", meal: true, d: "Double beef patty burger", p: 750, tag: "Beef", img: "/images/menu-cut/majestic-burger.webp", popular: true },
     { n: "Chixinger Burger", meal: true, d: "Crispy fried chicken fillet burger", p: 480, img: "/images/menu-cut/chixinger-burger.webp", popular: true },
     { n: "Creamy Wrap", meal: true, d: "Grilled chicken wrapped with creamy sauce", p: 580, img: "/images/menu-cut/creamy-wrap.webp" },
@@ -42,7 +42,7 @@ export const MENU = [
     { n: "Chocolate Chai", d: "Chai with a chocolate finish", p: 180, img: "/images/menu-cut/chocolate-chai.webp" },
     { n: "Adrak Chai", d: "Ginger-spiced chai", p: 180, img: "/images/menu-cut/adrak-chai.webp" },
   ]},
-  { id: "desserts", name: "Cookies & Desserts", script: "Sweet finish", glyph: "cake", items: [
+  { id: "desserts", name: "Cookies & Desserts", short: "Desserts", script: "Sweet finish", glyph: "cake", items: [
     { n: "Fudge Brownie", d: "Dense chocolate fudge brownie", p: 320, img: "/images/menu-cut/fudge-brownie.webp" },
     { n: "Lotus Slice", d: "Lotus biscoff slice", p: 280, img: "/images/menu-cut/lotus-slice.webp" },
     { n: "Caramel Slice", d: "Buttery caramel slice", p: 280, img: "/images/menu-cut/caramel-slice.webp" },
@@ -50,7 +50,7 @@ export const MENU = [
     { n: "Vanilla Cookies", d: "Classic vanilla cookies", p: 150, img: "/images/menu-cut/vanilla-cookies.webp" },
     { n: "Extra Bun", d: "Soft bun on the side", p: 60, img: "/images/menu-cut/extra-bun.webp" },
   ]},
-  { id: "drinks", name: "Beverages & Drinks", script: "Chill", glyph: "glass", items: [
+  { id: "drinks", name: "Beverages & Drinks", short: "Drinks", script: "Chill", glyph: "glass", items: [
     { n: "Mint Margarita", d: "Fresh mint and lemon, blended icy", p: 280, img: "/images/menu-cut/mint-margarita.webp" },
     { n: "Blue Lagoon Mocktail", d: "Blue curaçao mocktail with lemon", p: 260, img: "/images/menu-cut/blue-lagoon-mocktail.webp" },
     { n: "Lemonade", d: "Fresh squeezed lemonade", p: 220, img: "/images/menu-cut/lemonade.webp" },

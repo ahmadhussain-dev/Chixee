@@ -49,7 +49,7 @@ function LocationChip() {
       <Icon name="pin" className="size-5 flex-none sm:size-6" />
       <span className="min-w-0 leading-tight">
         <small className="hidden text-[11px] font-semibold uppercase tracking-wide text-maroon-dark/70 sm:block">
-          Your location
+          {location?.type === "pickup" ? "Pickup from" : "Delivery location"}
         </small>
         <b className="block truncate text-[13px] sm:text-sm">{label}</b>
       </span>
@@ -71,9 +71,14 @@ function UserMenu() {
   if (status === "loading") return <span className="order-2 h-[46px] w-[110px] md:order-none animate-pulse rounded-xl bg-white/40" />;
   if (!session) {
     return (
-      <Link href="/login" className="order-2 rounded-xl md:order-none border-2 border-maroon px-4 py-2.5 font-semibold text-maroon transition hover:-translate-y-0.5 hover:bg-maroon hover:text-white sm:px-5">
-        Sign In<span className="hidden sm:inline"> / Register</span>
-      </Link>
+      <div className="order-2 flex flex-none items-center gap-1 sm:gap-2 lg:order-none">
+        <Link href="/login" className="rounded-full px-3 py-2 font-semibold text-maroon underline-offset-4 transition hover:underline">
+          Login
+        </Link>
+        <Link href="/signup" className="rounded-full bg-maroon px-4 py-2 font-semibold text-white shadow-[0_6px_14px_rgba(140,22,29,.28)] transition hover:-translate-y-0.5 hover:bg-maroon-dark sm:px-5 sm:py-2.5">
+          Register
+        </Link>
+      </div>
     );
   }
   const first = session.user.name?.split(" ")[0] || "Account";

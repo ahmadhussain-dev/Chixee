@@ -35,6 +35,7 @@ const GLYPH = {
   glass: "M10 6h28l-4 36H14L10 6Zm4 4 1 8h18l1-8H14Z M30 2h4l-4 8h-3z",
   fries: "M14 6h4v14h-4zM20 4h4v16h-4zM26 6h4v14h-4zM32 8h4v12h-4zM10 20h28l-3 24H13L10 20Z",
   plus: "M20 8h8v12h12v8H28v12h-8V28H8v-8h12z",
+  fish: "M3 24C9 14 21 10 31 14l9-7v34l-9-7C21 38 9 34 3 24Zm9-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z",
 };
 
 export default function Icon({ name, className = "size-5", strokeWidth = 2 }) {
