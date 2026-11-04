@@ -1,11 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Icon, { Glyph } from "@/components/ui/Icon";
+import { BadgePercent, CakeSlice, CirclePlus, Coffee, CupSoda, Drumstick, Fish, Hamburger, Pizza, Utensils } from "lucide-react";
+import Icon from "@/components/ui/Icon";
 import MenuItemCard from "@/components/menu/MenuItemCard";
 import { MENU, ITEMS } from "@/data/menu";
 import { useCart } from "@/context/CartContext";
 import useFooterGap from "@/hooks/useFooterGap";
+
+// Lucide icons for the Explore Menu tiles (stroke 1.5, brand maroon #A3161B, 40px on tablet/desktop).
+const CATEGORY_ICONS = { broast: Drumstick, fish: Fish, pizza: Pizza, burgers: Hamburger, chai: Coffee, desserts: CakeSlice, drinks: CupSoda, addons: CirclePlus };
+const TILE = "group/tab flex w-[86px] flex-none flex-col items-center gap-1.5 rounded-2xl px-2 py-2.5 text-[12px] font-semibold leading-tight transition duration-300 ease-brand sm:w-[112px] sm:py-3 sm:text-[13.5px]";
+const TILE_ICON = "size-8 transition-transform duration-300 group-hover/tab:scale-110 sm:size-10";
 
 const smooth = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
 
@@ -83,7 +89,7 @@ export default function MenuBrowser() {
       let id = MENU[0].id;
       for (const c of MENU) {
         const el = document.getElementById(c.id);
-        if (el && el.getBoundingClientRect().top - 120 <= 0) id = c.id;
+        if (el && el.getBoundingClientRect().top - 130 <= 0) id = c.id;
       }
       setActive(id);
     };
@@ -118,8 +124,11 @@ export default function MenuBrowser() {
       <div ref={sentinelRef} aria-hidden="true" className="h-px" />
       <nav ref={navRef} aria-label="Menu categories" className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-300 ${stuck ? "bg-white/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_rgba(34,20,15,.08)] backdrop-blur-md" : ""}`}>
         <div className="wrap">
-          <div ref={tabsRef} className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 py-2.5 sm:gap-3">
-            {sections.map((c) => (
+          <div ref={tabsRef} className="no-scrollbar relative -mx-1 overflow-x-auto px-1 py-2.5">
+            <div className="mx-auto flex w-max gap-2 sm:gap-3.5">
+            {sections.map((c) => {
+              const CatIcon = CATEGORY_ICONS[c.id] || Utensils;
+              return (
               <button
                 key={c.id}
                 type="button"
@@ -127,23 +136,25 @@ export default function MenuBrowser() {
                 aria-current={active === c.id ? "true" : undefined}
                 onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: smooth() })}
                 style={{ opacity: c.list.length ? 1 : 0.4 }}
-                className={`group/tab flex min-w-[78px] flex-none flex-col items-center gap-1 rounded-2xl px-3 py-2 text-[12px] font-semibold leading-tight transition duration-300 ease-brand sm:min-w-[96px] sm:px-4 sm:text-[13.5px] ${
+                className={`${TILE} ${
                   active === c.id
                     ? "bg-yellow text-maroon-dark shadow-[0_6px_16px_rgba(242,174,0,.4)]"
                     : "bg-white text-ink shadow-[0_0_0_1px_var(--color-line),0_4px_10px_rgba(34,20,15,.04)] hover:-translate-y-0.5 hover:text-maroon"
                 }`}
               >
-                <Glyph name={c.glyph} className={`size-[22px] transition-transform duration-300 group-hover/tab:scale-110 sm:size-6 ${active === c.id ? "text-maroon-dark" : "text-maroon"}`} />
+                <CatIcon aria-hidden="true" strokeWidth={1.5} color="#A3161B" className={TILE_ICON} />
                 <span className="whitespace-nowrap">{c.short || c.name}</span>
               </button>
-            ))}
+              );
+            })}
             <Link
               href="/deals"
-              className="group/tab flex min-w-[78px] flex-none flex-col items-center gap-1 rounded-2xl bg-red px-3 py-2 text-[12px] font-semibold leading-tight text-white shadow-[0_6px_16px_rgba(227,38,45,.3)] transition duration-300 ease-brand hover:-translate-y-0.5 sm:min-w-[96px] sm:px-4 sm:text-[13.5px]"
+              className={`${TILE} bg-red text-white shadow-[0_6px_16px_rgba(227,38,45,.3)] hover:-translate-y-0.5`}
             >
-              <Glyph name="tag" className="size-[22px] transition-transform duration-300 group-hover/tab:scale-110 sm:size-6" />
+              <BadgePercent aria-hidden="true" strokeWidth={1.5} className={TILE_ICON} />
               <span className="whitespace-nowrap">Deals</span>
             </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -160,7 +171,7 @@ export default function MenuBrowser() {
 
         {sections.map((c) =>
           c.list.length ? (
-            <section key={c.id} id={c.id} aria-labelledby={`${c.id}-h`} className="scroll-mt-[86px] pt-9 sm:scroll-mt-[96px] sm:pt-14">
+            <section key={c.id} id={c.id} aria-labelledby={`${c.id}-h`} className="scroll-mt-[100px] pt-9 sm:scroll-mt-[114px] sm:pt-14">
               <div className="mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2 sm:mb-6">
                 <h2 id={`${c.id}-h`} className="heading text-[clamp(28px,3.4vw,42px)] after:mt-3 after:block after:h-[5px] after:w-[90px] after:rounded after:bg-yellow">
                   <small className="mb-0.5 block font-script text-2xl text-maroon">{c.script}</small>
