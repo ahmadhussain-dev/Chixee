@@ -11,6 +11,17 @@ const LINKS = [
   ["/admin/settings", "gear", "Payment & store"],
 ];
 
+// Phone/tablet header buttons: back to the site and sign out (the sidebar shows them on desktop).
+export function AdminActions() {
+  const btn = "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[13px] font-bold transition";
+  return (
+    <div className="ml-auto flex items-center gap-2 md:hidden">
+      <Link href="/" className={`${btn} bg-yellow text-maroon-dark hover:bg-white`}><Icon name="store" className="size-4" />Home</Link>
+      <button type="button" onClick={() => signOut({ callbackUrl: "/" })} className={`${btn} bg-white/10 text-on-night hover:bg-white/20`}><Icon name="logout" className="size-4" />Logout</button>
+    </div>
+  );
+}
+
 export default function AdminNav({ name }) {
   const path = usePathname();
   return (
@@ -19,8 +30,8 @@ export default function AdminNav({ name }) {
         const on = path === href;
         return (
           <Link key={href} href={href} aria-current={on ? "page" : undefined}
-            className={`flex flex-none items-center gap-3 rounded-xl px-4 py-3 font-semibold transition ${on ? "bg-yellow text-maroon-dark" : "text-on-night hover:bg-night-2"}`}>
-            <Icon name={icon} className="size-5" />{label}
+            className={`flex flex-none items-center gap-2 rounded-full px-3.5 py-2 text-sm font-semibold transition md:gap-3 md:rounded-xl md:px-4 md:py-3 md:text-base ${on ? "bg-yellow text-maroon-dark" : "text-on-night hover:bg-night-2"}`}>
+            <Icon name={icon} className="size-4 md:size-5" />{label}
           </Link>
         );
       })}

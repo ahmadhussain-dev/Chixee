@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
-import AdminNav from "@/components/admin/AdminNav";
+import AdminNav, { AdminActions } from "@/components/admin/AdminNav";
 import Logo from "@/components/ui/Logo";
 
 export const metadata = { title: { default: "Admin", template: "%s | Chixee Admin" }, robots: { index: false, follow: false } };
@@ -22,10 +22,12 @@ export default async function AdminLayout({ children }) {
   }
   return (
     <div className="min-h-screen bg-cream md:grid md:grid-cols-[240px_1fr]">
-      <aside className="bg-night text-on-night md:sticky md:top-0 md:h-screen">
-        <div className="flex items-center gap-3 p-5">
-          <Logo size={44} />
-          <div><b className="block font-display text-xl font-normal leading-none text-yellow">CHIXEE</b><small className="text-on-night-muted">Admin panel</small></div>
+      {/* Phones/tablets: a sticky top bar (logo, Home, Logout) with the section tabs under it. Desktop: sidebar. */}
+      <aside className="sticky top-0 z-30 bg-night text-on-night shadow-[0_6px_18px_rgba(0,0,0,.18)] md:h-screen md:shadow-none">
+        <div className="flex items-center gap-3 px-4 py-3 md:p-5">
+          <Logo size={40} />
+          <div><b className="block font-display text-lg font-normal leading-none text-yellow md:text-xl">CHIXEE</b><small className="text-xs text-on-night-muted md:text-sm">Admin panel</small></div>
+          <AdminActions />
         </div>
         <AdminNav name={session.user.name} />
       </aside>
