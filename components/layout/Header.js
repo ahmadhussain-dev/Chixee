@@ -7,6 +7,10 @@ import Logo from "@/components/ui/Logo";
 import { useLocation } from "@/context/LocationContext";
 import { SITE } from "@/data/site";
 
+// Sign out, then go to the home page of whichever site this is (Vercel, custom domain or localhost).
+// next-auth's own redirect builds the URL from NEXTAUTH_URL, which sent Vercel users to localhost.
+const logout = () => signOut({ redirect: false }).then(() => window.location.assign("/"));
+
 function ModeToggle() {
   const { location, setType } = useLocation();
   const mode = location?.type || "delivery";
@@ -114,7 +118,7 @@ function UserMenu() {
           {session.user.role === "admin" && (
             <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-cream"><Icon name="gear" className="size-[18px] text-maroon" />Admin panel</Link>
           )}
-          <button type="button" onClick={() => signOut({ callbackUrl: "/" })} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left hover:bg-cream"><Icon name="logout" className="size-[18px] text-maroon" />Sign out</button>
+          <button type="button" onClick={() => logout()} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left hover:bg-cream"><Icon name="logout" className="size-[18px] text-maroon" />Sign out</button>
         </div>
       )}
     </div>

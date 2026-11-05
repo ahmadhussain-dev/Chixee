@@ -4,6 +4,10 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Icon from "@/components/ui/Icon";
 
+// Sign out, then go to the home page of whichever site this is (Vercel, custom domain or localhost).
+// next-auth's own redirect builds the URL from NEXTAUTH_URL, which sent Vercel users to localhost.
+const logout = () => signOut({ redirect: false }).then(() => window.location.assign("/"));
+
 const LINKS = [
   ["/admin", "list", "Orders"],
   ["/admin/reports", "chart", "Reports"],
@@ -17,7 +21,7 @@ export function AdminActions() {
   return (
     <div className="ml-auto flex items-center gap-2 md:hidden">
       <Link href="/" className={`${btn} bg-yellow text-maroon-dark hover:bg-white`}><Icon name="store" className="size-4" />Home</Link>
-      <button type="button" onClick={() => signOut({ callbackUrl: "/" })} className={`${btn} bg-white/10 text-on-night hover:bg-white/20`}><Icon name="logout" className="size-4" />Logout</button>
+      <button type="button" onClick={() => logout()} className={`${btn} bg-white/10 text-on-night hover:bg-white/20`}><Icon name="logout" className="size-4" />Logout</button>
     </div>
   );
 }
@@ -38,7 +42,7 @@ export default function AdminNav({ name }) {
       <div className="mt-2 hidden border-t border-white/10 pt-3 md:block">
         <p className="px-4 pb-2 text-sm text-on-night-muted">Signed in as {name}</p>
         <Link href="/" className="flex items-center gap-3 rounded-xl px-4 py-3 text-on-night hover:bg-night-2"><Icon name="store" className="size-5" />View site</Link>
-        <button type="button" onClick={() => signOut({ callbackUrl: "/" })} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-on-night hover:bg-night-2"><Icon name="logout" className="size-5" />Sign out</button>
+        <button type="button" onClick={() => logout()} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-on-night hover:bg-night-2"><Icon name="logout" className="size-5" />Sign out</button>
       </div>
     </nav>
   );

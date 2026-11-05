@@ -1,4 +1,5 @@
 import { Caveat, Lilita_One, Poppins } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Providers from "@/components/providers/Providers";
 import { SITE } from "@/data/site";
 import { IMAGES } from "@/data/images";
@@ -37,6 +38,8 @@ export default function RootLayout({ children }) {
       {/* suppressHydrationWarning: browser extensions (Grammarly, translators, dark mode…) add attributes to <html>/<body> before React loads */}
       <body suppressHydrationWarning>
         <Providers>{children}</Providers>
+        {/* Vercel Speed Insights: real-visitor page speed, shown in the Vercel dashboard (no-op locally) */}
+        <SpeedInsights />
       </body>
     </html>
   );
