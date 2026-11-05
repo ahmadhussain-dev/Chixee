@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { Bike, ChevronRight, Store } from "lucide-react";
 import useEventStream from "@/hooks/useEventStream";
@@ -20,6 +21,7 @@ const shortLabel = (o) => (o.status === "ready" && o.type === "pickup" ? "Ready 
 // because the order number is remembered on this device (lib/recent-orders).
 export default function OrderBar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const footerGap = useFooterGap();
   const [code, setCode] = useState(null);
   const [order, setOrder] = useState(null);
@@ -52,8 +54,8 @@ export default function OrderBar() {
   const live = order && !DONE.includes(order.status);
   useEventStream(live ? `/api/orders/${order.code}/stream` : null, { onOrder: setOrder, onOpen: (re) => re && load() });
 
-  // Not on the order's own page, at checkout, or once it's finished.
-  const hidden = !live || pathname === "/checkout" || pathname?.toUpperCase() === `/ORDER/${order?.code}`;
+  // Not for admins, not on the order's own page, at checkout, or once it's finished.
+  const hidden = !live || session?.user?.role === "admin" || pathname === "/checkout" || pathname?.toUpperCase() === `/ORDER/${order?.code}`;
   useBottomBar(!hidden);
   if (hidden) return null;
   const Ico = order.type === "pickup" ? Store : Bike;
