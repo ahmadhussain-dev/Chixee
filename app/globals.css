@@ -96,3 +96,8 @@ html[data-bottom-bar] {
     --bottom-bar-h: 0px;
   }
 }
+
+/* The order page's Home / Explore menu bar stays pinned over the footer, so leave room under it. */
+html:has(#order-page-actions) #site-footer {
+  padding-bottom: 96px;
+}
