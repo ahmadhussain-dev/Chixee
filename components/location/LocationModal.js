@@ -5,6 +5,7 @@ import Icon from "@/components/ui/Icon";
 import Logo from "@/components/ui/Logo";
 import { useLocation } from "@/context/LocationContext";
 import { CITIES, SITE } from "@/data/site";
+import useScrollLock from "@/hooks/useScrollLock";
 
 // Searchable area dropdown with ETA, like the reference design.
 function AreaSelect({ areas, value, onChange, loading }) {
@@ -41,7 +42,7 @@ function AreaSelect({ areas, value, onChange, loading }) {
         </button>
       </div>
       {open && (
-        <ul id="area-list" role="listbox" className="absolute inset-x-0 bottom-[calc(100%+6px)] z-10 max-h-72 animate-pop overflow-y-auto rounded-xl bg-white py-1 shadow-[0_20px_50px_rgba(0,0,0,.2)] ring-1 ring-line">
+        <ul id="area-list" role="listbox" className="absolute inset-x-0 bottom-[calc(100%+6px)] z-10 max-h-72 animate-pop overflow-y-auto overscroll-contain rounded-xl bg-white py-1 shadow-[0_20px_50px_rgba(0,0,0,.2)] ring-1 ring-line">
           {!list.length && <li className="px-4 py-3 text-sm text-muted">{loading ? "Loading…" : "No area matches. Try another name or call us."}</li>}
           {list.map((a) => (
             <li key={a.id} role="option" aria-selected={value?.id === a.id}>
@@ -73,8 +74,18 @@ export default function LocationModal() {
     setModalOpen(false);
   };
 
+  // While open: the page behind stays still, Escape closes, and a tap outside the box closes.
+  useScrollLock(open);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && close();
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  });
+
   return (
     <div
+      onClick={(e) => e.target === e.currentTarget && close()}
       role="dialog"
       aria-modal="true"
       aria-labelledby="loc-title"

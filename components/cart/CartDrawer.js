@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import { useLocation } from "@/context/LocationContext";
 import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
+import useScrollLock from "@/hooks/useScrollLock";
 
 export default function CartDrawer() {
   const { lines, subtotal, count, setLineQty, clear, drawerOpen, setDrawerOpen } = useCart();
@@ -17,6 +18,7 @@ export default function CartDrawer() {
   const pickup = location?.type === "pickup";
   const fee = !pickup && location?.area ? location.area.fee : null;
 
+  useScrollLock(drawerOpen);
   useEffect(() => {
     if (!drawerOpen) return;
     closeRef.current?.focus();
@@ -65,7 +67,7 @@ export default function CartDrawer() {
           <span className="font-semibold underline">Change</span>
         </button>
 
-        <div className="flex flex-1 flex-col overflow-y-auto px-5 py-2">
+        <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain px-5 py-2">
           {!lines.length ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-2.5 p-8 text-center text-muted">
               <Icon name="bag" className="size-[72px] animate-float text-yellow" />

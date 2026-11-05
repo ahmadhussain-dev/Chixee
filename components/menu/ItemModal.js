@@ -5,6 +5,8 @@ import Icon from "@/components/ui/Icon";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
 import { IF_UNAVAILABLE, defaultSize, formatPKR, frequentlyBoughtWith, fromPrice, priceOf } from "@/data/menu";
+import useScrollLock from "@/hooks/useScrollLock";
+import AutoTextarea from "@/components/ui/AutoTextarea";
 
 const SHOW_FIRST = 3;
 const smooth = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
@@ -42,19 +44,14 @@ export default function ItemModal({ item, onClose }) {
   const extrasTotal = extras.reduce((s, id) => s + priceOf(suggestions.find((x) => x.id === id), defaultSize(suggestions.find((x) => x.id === id))), 0);
   const total = unit * qty + extrasTotal;
 
-  // Close on Escape, lock page scroll while open, focus the close button for keyboard users.
+  // Close on Escape, focus the close button for keyboard users.
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
     addEventListener("keydown", onKey);
-    const html = document.documentElement;
-    const prev = html.style.overflow;
-    html.style.overflow = "hidden";
     closeRef.current?.focus({ preventScroll: true });
-    return () => {
-      removeEventListener("keydown", onKey);
-      html.style.overflow = prev;
-    };
+    return () => removeEventListener("keydown", onKey);
   }, [onClose]);
+  useScrollLock(true);
 
   // Scroll only the popup's own content (scrollIntoView would also shift the popup frame).
   const scrollToSection = (el) => {
@@ -186,7 +183,7 @@ export default function ItemModal({ item, onClose }) {
               <div className="grid gap-2 border-t border-line pt-5">
                 <label htmlFor="item-note" className="text-lg font-bold">Special instructions</label>
                 <p className="-mt-1.5 text-sm text-muted">Special requests are subject to the restaurant&apos;s approval. Tell us here!</p>
-                <textarea id="item-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} rows={3} placeholder="e.g. No mayo, extra spicy" className="input resize-none" />
+                <AutoTextarea id="item-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={200} maxRows={5} placeholder="e.g. No mayo, extra spicy" className="input" />
               </div>
 
               <fieldset className="grid gap-2">

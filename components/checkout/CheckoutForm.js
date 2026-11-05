@@ -13,6 +13,7 @@ import { useCart } from "@/context/CartContext";
 import { useLocation } from "@/context/LocationContext";
 import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
+import AutoTextarea from "@/components/ui/AutoTextarea";
 
 function Section({ title, action, children }) {
   return (
@@ -170,7 +171,7 @@ export default function CheckoutForm() {
             ) : (
               <div className="grid gap-3">
                 {status !== "authenticated" && addresses.length === 0 && <p className="rounded-xl bg-white/70 px-4 py-3 text-sm text-muted ring-1 ring-line">You don&apos;t have a saved address. <Link href="/login?next=/checkout" className="font-semibold text-maroon">Sign in</Link> to save addresses, or enter it below.</p>}
-                <label className="label">Full address<textarea required rows={3} value={newAddress.line} onChange={(e) => setNewAddress((n) => ({ ...n, line: e.target.value }))} placeholder="House #, street, block, nearest landmark" className="input resize-y" /></label>
+                <label className="label">Full address<AutoTextarea required value={newAddress.line} onChange={(e) => setNewAddress((n) => ({ ...n, line: e.target.value }))} placeholder="House #, street, block" className="input text-base font-normal" /></label>
                 {status === "authenticated" && (
                   <div className="flex flex-wrap items-center gap-4">
                     <label className="label flex-1">Label<input value={newAddress.label} onChange={(e) => setNewAddress((n) => ({ ...n, label: e.target.value }))} placeholder="Home, Office…" className="input" /></label>
@@ -183,7 +184,7 @@ export default function CheckoutForm() {
         )}
 
         <Section title="Special Instructions">
-          <textarea rows={3} value={form.instructions} onChange={set("instructions")} maxLength={500} placeholder="E.g. extra spicy garlic, no onions, call on arrival, gate code…" className="input resize-y" />
+          <AutoTextarea value={form.instructions} onChange={set("instructions")} maxLength={500} placeholder="E.g. no onions, call on arrival" className="input" />
         </Section>
 
         <Section title="Payment Method">
