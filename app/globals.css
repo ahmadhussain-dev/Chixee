@@ -85,3 +85,14 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Room for a bar fixed at the bottom centre (see hooks/useBottomBar). On wide screens the bar
+   sits clear of the corner buttons, so they stay where they are. */
+html[data-bottom-bar] {
+  --bottom-bar-h: 72px;
+}
+@media (min-width: 1024px) {
+  html[data-bottom-bar] {
+    --bottom-bar-h: 0px;
+  }
+}

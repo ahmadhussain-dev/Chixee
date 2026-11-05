@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Bike, ChevronRight, Store } from "lucide-react";
 import useEventStream from "@/hooks/useEventStream";
 import useFooterGap from "@/hooks/useFooterGap";
-import { useCart } from "@/context/CartContext";
+import useBottomBar from "@/hooks/useBottomBar";
 import { RECENT_ORDERS_EVENT, getRecentOrders } from "@/lib/recent-orders";
 import { stepLabel } from "@/lib/status";
 
@@ -15,12 +15,11 @@ const DONE = ["delivered", "cancelled"];
 const SHORT = { pending: "Being confirmed", accepted: "Order accepted", preparing: "Preparing your food", ready: "Ready", dispatched: "Rider on the way" };
 const shortLabel = (o) => (o.status === "ready" && o.type === "pickup" ? "Ready for pickup" : SHORT[o.status] || stepLabel(o.status, o.type));
 
-// Live order bar: after someone places an order, a small bar sits at the bottom-left of every page
+// Live order bar: after someone places an order, a small bar sits at the bottom centre of every page
 // with its status and a Track link, until the order is delivered or cancelled. Works for guests,
 // because the order number is remembered on this device (lib/recent-orders).
 export default function OrderBar() {
   const pathname = usePathname();
-  const { count } = useCart();
   const footerGap = useFooterGap();
   const [code, setCode] = useState(null);
   const [order, setOrder] = useState(null);
@@ -55,6 +54,7 @@ export default function OrderBar() {
 
   // Not on the order's own page, at checkout, or once it's finished.
   const hidden = !live || pathname === "/checkout" || pathname?.toUpperCase() === `/ORDER/${order?.code}`;
+  useBottomBar(!hidden);
   if (hidden) return null;
   const Ico = order.type === "pickup" ? Store : Bike;
 
@@ -63,9 +63,7 @@ export default function OrderBar() {
       href={`/order/${order.code}`}
       style={{ marginBottom: footerGap }}
       aria-label={`Your order ${order.code}: ${stepLabel(order.status, order.type)}. Track order`}
-      className={`fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-[max(16px,env(safe-area-inset-left))] z-[58] flex animate-fade-up items-center gap-2.5 rounded-[20px] bg-night py-2 pl-2 pr-3 text-white shadow-[0_14px_34px_rgba(0,0,0,.35)] transition hover:-translate-y-0.5 sm:bottom-5 sm:left-5 sm:w-[340px] ${
-        count ? "right-[184px] sm:right-auto" : "right-[80px] sm:right-auto"
-      }`}
+      className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-0 right-0 z-[58] mx-auto flex w-[min(400px,calc(100%-32px))] animate-fade-up items-center gap-2.5 rounded-[20px] bg-night py-2 pl-2 pr-3 text-white shadow-[0_14px_34px_rgba(0,0,0,.35)] transition hover:brightness-110 sm:bottom-5"
     >
       <span className="relative grid size-11 flex-none place-items-center rounded-full bg-yellow text-maroon-dark">
         <Ico aria-hidden="true" strokeWidth={2.2} className="size-[22px]" />
