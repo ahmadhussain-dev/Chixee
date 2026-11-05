@@ -20,7 +20,7 @@ export default function CartButton() {
       aria-label={`Open cart, ${count} item${count === 1 ? "" : "s"}`}
       aria-hidden={!show}
       tabIndex={show ? 0 : -1}
-      style={{ marginBottom: footerGap }}
+      style={{ marginBottom: `calc(${footerGap}px + var(--bottom-bar-h, 0px))` }}
       className={`fixed bottom-[max(16px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-[60] flex items-center gap-3 rounded-full bg-maroon py-2 pl-2 pr-5 text-white shadow-[0_14px_34px_rgba(107,13,17,.4)] transition duration-500 ease-brand hover:-translate-y-1 hover:bg-maroon-dark sm:bottom-[max(20px,env(safe-area-inset-bottom))] sm:right-[max(20px,env(safe-area-inset-right))] ${show ? "visible translate-y-0 opacity-100" : "invisible translate-y-24 opacity-0"}`}
     >
       {/* key changes on every add, which replays the bump animation */}

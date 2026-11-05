@@ -19,7 +19,12 @@ export default function useFooterGap() {
     measure();
     addEventListener("scroll", onScroll, { passive: true });
     addEventListener("resize", onScroll);
+    // The page can grow after mount (e.g. the order page swaps its loading skeleton for the order),
+    // which moves the footer without any scroll, so measure again when the page's height changes.
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(document.body);
     return () => {
+      ro.disconnect();
       removeEventListener("scroll", onScroll);
       removeEventListener("resize", onScroll);
       cancelAnimationFrame(frame);
