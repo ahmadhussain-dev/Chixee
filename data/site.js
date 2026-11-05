@@ -4,7 +4,7 @@ export const SITE = {
   tagline: "Chemistry in every bite",
   description:
     "Authentic injected broast, Indus River Saul fish n chips, loaded pizzas, wraps and Chaialogy chai in Faisalabad. Order online for delivery or pickup.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  url: process.env.NEXT_PUBLIC_SITE_URL || (process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
   uan: "111-341-111",
   phone: "0304-447 1111",
   phoneIntl: "+923044471111",
