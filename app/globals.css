@@ -101,3 +101,30 @@ html[data-bottom-bar] {
 html:has(#order-page-actions) #site-footer {
   padding-bottom: 96px;
 }
+
+/* Loading skeletons (components/ui/Skeleton.js): soft blocks with a shine sweeping across. */
+@layer components {
+.skel {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-line);
+  border-radius: 999px;
+}
+.skel-y { background: #ffe9a8; }
+.skel-d { background: rgba(255, 255, 255, 0.16); }
+.skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.55) 50%, transparent 80%);
+  animation: skel-shine 1.4s ease-in-out infinite;
+}
+.skel-d::after { background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.18) 50%, transparent 80%); }
+}
+@keyframes skel-shine {
+  to { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skel::after { animation: none; }
+}

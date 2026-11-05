@@ -7,6 +7,7 @@ import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
 import { STATUS_STEPS, stepLabel } from "@/lib/status";
 import { rememberOrder } from "@/lib/recent-orders";
+import { OrderSkeleton } from "@/components/ui/Skeleton";
 
 const fmtTime = (d) => new Date(d).toLocaleTimeString("en-PK", { hour: "numeric", minute: "2-digit" });
 
@@ -34,7 +35,7 @@ export default function OrderTracker({ code, isNew }) {
   useEventStream(order && !finished ? `/api/orders/${code}/stream` : null, { onOrder: setOrder, onOpen: (reconnect) => reconnect && load() });
 
   if (error) return <div className="card mx-auto max-w-md p-8 text-center"><h1 className="heading text-3xl">Order not found</h1><p className="mt-2 text-muted">Check the order number and try again.</p><Link href="/track" className="btn-yellow mt-5">Track another order</Link></div>;
-  if (!order) return <div className="card mx-auto h-80 max-w-2xl animate-pulse" />;
+  if (!order) return <OrderSkeleton />;
 
   const steps = STATUS_STEPS[order.type];
   const idx = steps.indexOf(order.status);

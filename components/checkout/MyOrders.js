@@ -3,13 +3,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatPKR } from "@/data/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
+import { OrderRowsSkeleton } from "@/components/ui/Skeleton";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState(null);
   useEffect(() => {
     fetch("/api/orders").then((r) => (r.ok ? r.json() : [])).then(setOrders);
   }, []);
-  if (!orders) return <div className="card h-48 animate-pulse" />;
+  if (!orders) return <OrderRowsSkeleton />;
   if (!orders.length) return <div className="card p-10 text-center text-muted">No orders yet. <Link href="/#menu" className="font-semibold text-maroon">Order something tasty</Link>.</div>;
   return (
     <ul className="grid gap-3">
