@@ -5,6 +5,7 @@ import { useToast } from "@/context/ToastContext";
 import Icon from "@/components/ui/Icon";
 import { IF_UNAVAILABLE, formatPKR } from "@/data/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
+import { AdminOrdersSkeleton } from "@/components/ui/Skeleton";
 
 const FILTERS = [["active", "Active"], ["pending", "Pending"], ["preparing", "Preparing"], ["dispatched", "Dispatched"], ["delivered", "Delivered"], ["cancelled", "Cancelled"], ["all", "All"]];
 
@@ -205,7 +206,7 @@ export default function OrdersBoard() {
         ))}
       </div>
       {error && <p className="rounded-xl bg-red-50 p-4 text-maroon">{error}</p>}
-      {!orders && !error && <div className="card h-48 animate-pulse" />}
+      {!orders && !error && <AdminOrdersSkeleton />}
       {orders && !orders.length && <div className="card p-10 text-center text-muted">No orders here.</div>}
       <div className="grid gap-4">{orders?.map((o) => <OrderCard key={o.code} order={o} onChange={update} />)}</div>
     </div>

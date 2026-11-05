@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Icon from "@/components/ui/Icon";
+import { AreaRowsSkeleton } from "@/components/ui/Skeleton";
 
 const api = async (url, method, body) => {
   const r = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
@@ -61,7 +62,7 @@ export default function AreasManager() {
         <div aria-hidden="true" className="hidden bg-cream px-3 py-3 text-left text-sm font-semibold text-muted sm:grid sm:grid-cols-[minmax(0,1fr)_96px_112px_64px_120px] sm:gap-3">
           <span>Area</span><span>ETA (min)</span><span>Fee (Rs.)</span><span className="text-center">Active</span><span />
         </div>
-        {!areas && <p className="p-6 text-center text-muted">Loading…</p>}
+        {!areas && <AreaRowsSkeleton />}
         {areas?.length === 0 && <p className="p-6 text-center text-muted">No areas yet. Add one above or run <code>npm run seed</code>.</p>}
         <ul className="sm:border-t sm:border-line">
           {areas?.map((a) => (

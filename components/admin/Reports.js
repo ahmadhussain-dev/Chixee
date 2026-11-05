@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { formatPKR } from "@/data/menu";
+import { ReportsSkeleton } from "@/components/ui/Skeleton";
 
 const PERIODS = [["daily", "Today"], ["weekly", "This week"], ["monthly", "This month"]];
 
@@ -37,7 +38,7 @@ export default function Reports() {
         </div>
       </div>
       {error && <p className="rounded-xl bg-red-50 p-4 text-maroon">{error}</p>}
-      {!data && !error && <div className="card h-48 animate-pulse" />}
+      {!data && !error && <ReportsSkeleton />}
       {data && (
         <div className="grid gap-6">
           <p className="text-sm text-muted">Since {new Date(data.from).toLocaleString("en-PK", { dateStyle: "full", timeStyle: "short" })}. Cancelled orders are not counted ({data.cancelled} cancelled).</p>

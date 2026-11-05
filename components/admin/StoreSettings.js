@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { SettingsSkeleton } from "@/components/ui/Skeleton";
 
 const FIELDS = [
   ["bankName", "Bank name", "e.g. Meezan Bank"],
@@ -14,7 +15,7 @@ export default function StoreSettings() {
   const [s, setS] = useState(null);
   const [msg, setMsg] = useState("");
   useEffect(() => { fetch("/api/settings").then((r) => r.json()).then(setS); }, []);
-  if (!s) return <div className="card h-64 animate-pulse" />;
+  if (!s) return <SettingsSkeleton />;
 
   return (
     <form
