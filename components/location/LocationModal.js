@@ -104,8 +104,8 @@ export default function LocationModal() {
 }
 
 function LocationForm({ onDone }) {
-  const { location, setLocation, areas, loadAreas } = useLocation();
-  const [type, setType] = useState(location?.type || "delivery");
+  const { location, modalType, setLocation, areas, loadAreas } = useLocation();
+  const [type, setType] = useState(modalType || location?.type || "delivery");
   const [city, setCity] = useState(location?.city || CITIES[0]);
   const [area, setArea] = useState(location?.area || null);
   const loading = areas === null;

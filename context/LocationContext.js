@@ -9,7 +9,12 @@ export const useLocation = () => useContext(LocCtx);
 export function LocationProvider({ children }) {
   const [location, setLocationState] = useState(null);
   const [ready, setReady] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpenState] = useState(false);
+  const [modalType, setModalType] = useState(null); // order type the popup opens on (null = the saved one)
+  const setModalOpen = useCallback((open, type = null) => {
+    setModalType(open ? type : null);
+    setModalOpenState(open);
+  }, []);
   const [areas, setAreas] = useState(null); // null = not loaded yet
 
   const setLocation = useCallback((loc) => {
@@ -50,14 +55,14 @@ export function LocationProvider({ children }) {
   const setType = useCallback(
     (type) => {
       if (type === "delivery" && !location?.area) {
-        setModalOpen(true);
+        setModalOpen(true, "delivery");
         return;
       }
       setLocation({ city: "Faisalabad", area: null, ...location, type });
     },
-    [location, setLocation]
+    [location, setLocation, setModalOpen]
   );
 
-  const value = { location, ready, setLocation, setType, modalOpen, setModalOpen, areas, loadAreas };
+  const value = { location, ready, setLocation, setType, modalOpen, modalType, setModalOpen, areas, loadAreas };
   return <LocCtx.Provider value={value}>{children}</LocCtx.Provider>;
 }
