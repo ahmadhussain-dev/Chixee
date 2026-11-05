@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import CartButton from "@/components/cart/CartButton";
 import CartDrawer from "@/components/cart/CartDrawer";
 import LocationModal from "@/components/location/LocationModal";
+import OrderBar from "@/components/orders/OrderBar";
 import { ItemModalProvider } from "@/context/ItemModalContext";
 
 export default function ShopChrome({ children }) {
@@ -12,6 +13,7 @@ export default function ShopChrome({ children }) {
       <Header />
       <div id="main">{children}</div>
       <Footer />
+      <OrderBar />
       <CartButton />
       <CartDrawer />
       <LocationModal />

@@ -6,6 +6,7 @@ import Icon from "@/components/ui/Icon";
 import { formatPKR } from "@/data/menu";
 import { SITE } from "@/data/site";
 import { STATUS_STEPS, stepLabel } from "@/lib/status";
+import { rememberOrder } from "@/lib/recent-orders";
 
 const fmtTime = (d) => new Date(d).toLocaleTimeString("en-PK", { hour: "numeric", minute: "2-digit" });
 
@@ -17,7 +18,10 @@ export default function OrderTracker({ code, isNew }) {
     const r = await fetch(`/api/orders/${code}`, { cache: "no-store" });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) setError(data.error || "Order not found.");
-    else setOrder(data);
+    else {
+      setOrder(data);
+      rememberOrder(data); // so the live order bar and "Orders on this phone" can find it again
+    }
   }, [code]);
 
   useEffect(() => {
