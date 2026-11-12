@@ -22,6 +22,7 @@ export default function LoginForm() {
     const f = new FormData(e.currentTarget);
     const res = await signIn("credentials", { identifier: f.get("identifier"), password: f.get("password"), redirect: false });
     setBusy(false);
+    if (res?.error === "TooManyAttempts") return setError("Too many sign-in attempts. Please wait 15 minutes and try again.");
     if (res?.error) return setError("Wrong email/mobile or password.");
     router.push(next.startsWith("/") ? next : "/");
     router.refresh();

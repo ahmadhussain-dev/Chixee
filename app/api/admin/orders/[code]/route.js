@@ -1,7 +1,6 @@
 import { dbConnect } from "@/lib/db";
 import Order, { ORDER_STATUSES } from "@/models/Order";
-import { requireAdmin } from "@/lib/auth";
-import { ok, fail, handle } from "@/lib/api";
+import { ok, fail, route, readJson } from "@/lib/api";
 import { clean, isPhone, normalizePhone } from "@/lib/validate";
 import { publish } from "@/lib/orderEvents";
 import { adminOrder } from "@/lib/orders";
@@ -17,10 +16,9 @@ const NEXT = {
   cancelled: [],
 };
 
-export const PATCH = handle(async (req, { params }) => {
-  if (!(await requireAdmin())) return fail("Admins only.", 403);
+export const PATCH = route(async (req, { params }) => {
   const { code } = await params;
-  const b = await req.json();
+  const b = await readJson(req);
   await dbConnect();
   const order = await Order.findOne({ code });
   if (!order) return fail("Order not found.", 404);
@@ -30,15 +28,15 @@ export const PATCH = handle(async (req, { params }) => {
   if (b.rider) {
     const name = clean(b.rider.name, 60);
     const phone = normalizePhone(b.rider.phone);
-    if (!name || !isPhone(phone)) return fail("Enter the rider's name and a valid mobile number.");
+    if (!name || !isPhone(phone)) return fail("Enter the rider's name and a valid mobile number.", 422);
     order.rider = { name, phone };
   }
 
   if (b.status && b.status !== order.status) {
     if (!ORDER_STATUSES.includes(b.status) || !NEXT[order.status].includes(b.status))
-      return fail(`Can't move an order from ${order.status} to ${b.status}.`);
+      return fail(`Can't move an order from ${order.status} to ${b.status}.`, 409);
     if (b.status === "dispatched" && order.type === "delivery" && !order.rider?.name)
-      return fail("Add rider details before dispatching.");
+      return fail("Add rider details before dispatching.", 422);
     order.status = b.status;
     order.history.push({ status: b.status, note: clean(b.note, 200) });
   }
@@ -47,4 +45,4 @@ export const PATCH = handle(async (req, { params }) => {
   const o = order.toObject();
   publish(o);
   return ok(adminOrder(o));
-});
+}, { auth: "admin" });

@@ -1,7 +1,6 @@
 import { dbConnect } from "@/lib/db";
 import Deal from "@/models/Deal";
-import { requireAdmin } from "@/lib/auth";
-import { ok, fail, handle, readJson } from "@/lib/api";
+import { ok, fail, route, readJson } from "@/lib/api";
 import { refreshCatalog } from "@/lib/catalog";
 import { itemsByKey, parseDeal, uniqueKey } from "@/lib/menu-admin";
 import { log } from "@/lib/log";
@@ -9,9 +8,7 @@ import { log } from "@/lib/log";
 export const dynamic = "force-dynamic";
 
 // Add a new deal.
-export const POST = handle(async (req) => {
-  const admin = await requireAdmin();
-  if (!admin) return fail("Admins only.", 403);
+export const POST = route(async (req, _ctx, { session: admin }) => {
   const b = await readJson(req);
   await dbConnect();
   const { doc, error } = parseDeal(b, await itemsByKey());
@@ -21,4 +18,4 @@ export const POST = handle(async (req) => {
   refreshCatalog();
   log.info("menu.deal_created", { key: deal.key, by: admin.user.email });
   return ok(deal.toObject(), { status: 201 });
-});
+}, { auth: "admin" });

@@ -2,8 +2,10 @@ import { dbConnect } from "@/lib/db";
 import Order from "@/models/Order";
 import Area from "@/models/Area";
 import Setting from "@/models/Setting";
+import { ok, fail, route, readJson, clientIp } from "@/lib/api";
 import { getSession } from "@/lib/auth";
-import { ok, fail, handle, readJson } from "@/lib/api";
+import { rateLimit } from "@/lib/rateLimit";
+import { log } from "@/lib/log";
 import { clean, isEmail, isPhone, normalizePhone } from "@/lib/validate";
 import { IF_UNAVAILABLE, priceOf } from "@/lib/menu";
 import { getCatalogForOrder } from "@/lib/catalog";
@@ -14,15 +16,13 @@ import { publish } from "@/lib/orderEvents";
 export const dynamic = "force-dynamic";
 
 // Signed-in customer's own orders
-export const GET = handle(async () => {
-  const session = await getSession();
-  if (!session) return fail("Please sign in.", 401);
+export const GET = route(async (_req, _ctx, { session }) => {
   await dbConnect();
   const orders = await Order.find({ user: session.user.id }).sort({ createdAt: -1 }).limit(50).lean();
   return ok(orders.map(publicOrder));
-});
+}, { auth: "user" });
 
-export const POST = handle(async (req) => {
+export const POST = route(async (req, _ctx, { requestId }) => {
   const b = await readJson(req);
   const session = await getSession();
 
@@ -61,7 +61,7 @@ export const POST = handle(async (req) => {
   if (!lines.length) return fail("Your cart is empty, or its items are no longer on the menu.");
 
   const settings = await Setting.findOne({ key: "store" }).lean();
-  if (settings && settings.acceptingOrders === false) return fail("Sorry, we're not taking online orders right now. Please call " + SITE.uan + ".");
+  if (settings && settings.acceptingOrders === false) return fail("Sorry, we're not taking online orders right now. Please call " + SITE.uan + ".", 503);
 
   let address = { line: "", area: "", city: SITE.city };
   let deliveryFee = 0;
@@ -75,6 +75,9 @@ export const POST = handle(async (req) => {
   } else {
     address = { line: SITE.branch.address, area: "Pickup", city: SITE.city };
   }
+
+  // Counted only once the order is valid, so fixing form mistakes never locks a customer out.
+  await rateLimit(`order:${clientIp(req)}`, { limit: 10, windowSec: 600, message: "Too many orders from this connection. Please call us if you need to order more." });
 
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
   let order;
@@ -98,6 +101,8 @@ export const POST = handle(async (req) => {
       if (e.code !== 11000) throw e; // retry only on duplicate code
     }
   }
+  if (!order) throw new Error("Could not create a unique order code");
+  log.info("order.created", { requestId, code: order.code, total: order.total, type, payment: method, user: order.user?.toString() });
   publish(order.toObject());
   return ok(publicOrder(order), { status: 201 });
 });

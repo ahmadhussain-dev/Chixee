@@ -1,7 +1,6 @@
 import { dbConnect } from "@/lib/db";
 import MenuItem from "@/models/MenuItem";
-import { requireAdmin } from "@/lib/auth";
-import { ok, fail, handle, readJson } from "@/lib/api";
+import { ok, fail, route, readJson } from "@/lib/api";
 import { loadCatalogRaw, refreshCatalog } from "@/lib/catalog";
 import { parseItem, uniqueKey } from "@/lib/menu-admin";
 import { log } from "@/lib/log";
@@ -9,15 +8,12 @@ import { log } from "@/lib/log";
 export const dynamic = "force-dynamic";
 
 // Every item and deal, hidden ones included.
-export const GET = handle(async () => {
-  if (!(await requireAdmin())) return fail("Admins only.", 403);
+export const GET = route(async () => {
   return ok(await loadCatalogRaw());
-});
+}, { auth: "admin" });
 
 // Add a new item.
-export const POST = handle(async (req) => {
-  const admin = await requireAdmin();
-  if (!admin) return fail("Admins only.", 403);
+export const POST = route(async (req, _ctx, { session: admin }) => {
   const { doc, error } = parseItem(await readJson(req));
   if (error) return fail(error, 422);
   await dbConnect();
@@ -26,4 +22,4 @@ export const POST = handle(async (req) => {
   refreshCatalog();
   log.info("menu.item_created", { key: item.key, by: admin.user.email });
   return ok(item.toObject(), { status: 201 });
-});
+}, { auth: "admin" });
