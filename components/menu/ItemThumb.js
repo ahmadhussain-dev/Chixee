@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Glyph } from "@/components/ui/Icon";
-import { imgSrc } from "@/data/menu";
+import { imgSrc } from "@/lib/menu";
 import { Bone } from "@/components/ui/Skeleton";
 
 // Product picture: the background-removed item sitting on a plain brand-yellow tile.

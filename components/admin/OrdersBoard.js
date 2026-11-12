@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useEventStream from "@/hooks/useEventStream";
 import { useToast } from "@/context/ToastContext";
 import Icon from "@/components/ui/Icon";
-import { IF_UNAVAILABLE, formatPKR } from "@/data/menu";
+import { IF_UNAVAILABLE, formatPKR } from "@/lib/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
 import { AdminOrdersSkeleton } from "@/components/ui/Skeleton";
 

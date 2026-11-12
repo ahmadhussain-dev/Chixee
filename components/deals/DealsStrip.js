@@ -1,20 +1,21 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import DealMiniCard from "@/components/deals/DealMiniCard";
 import DealsPattern from "@/components/deals/DealsPattern";
 import HotBadge from "@/components/deals/HotBadge";
 import Icon from "@/components/ui/Icon";
-import { DEALS } from "@/data/menu";
+import { useCatalog } from "@/context/CatalogContext";
 
-// Featured deals first, then today's, then the rest.
-const HOT = [...DEALS].sort((a, b) => (b.featured ? 2 : b.group === "today" ? 1 : 0) - (a.featured ? 2 : a.group === "today" ? 1 : 0));
 
 // Home page "Hot Deals": heading with a link to /deals and a row of deal cards that keeps gliding
 // left to right. It stops while the cursor is over it (or a finger is on it, or a card has focus).
 // The list is drawn twice so the loop is seamless. The second copy is hidden from screen readers and
 // skipped by Tab, but stays clickable (not `inert`), since it is the copy on screen half of the time.
 export default function DealsStrip() {
+  const { DEALS } = useCatalog();
+  // Featured deals first, then today's, then the rest.
+  const HOT = useMemo(() => [...DEALS].sort((a, b) => (b.featured ? 2 : b.group === "today" ? 1 : 0) - (a.featured ? 2 : a.group === "today" ? 1 : 0)), [DEALS]);
   const [held, setHeld] = useState(false);
   const resume = useRef(null);
   const hold = () => {

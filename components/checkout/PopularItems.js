@@ -2,10 +2,12 @@
 import { useRef } from "react";
 import Icon from "@/components/ui/Icon";
 import ItemThumb from "@/components/menu/ItemThumb";
-import { POPULAR, formatPKR, fromPrice } from "@/data/menu";
+import { formatPKR, fromPrice } from "@/lib/menu";
+import { useCatalog } from "@/context/CatalogContext";
 import { useItemModal } from "@/context/ItemModalContext";
 
 export default function PopularItems() {
+  const { POPULAR } = useCatalog();
   const ref = useRef(null);
   const { openItem } = useItemModal();
   const scroll = (d) => ref.current?.scrollBy({ left: d * ref.current.clientWidth * 0.8, behavior: "smooth" });

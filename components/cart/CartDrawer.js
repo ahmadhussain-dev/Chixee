@@ -6,7 +6,7 @@ import ItemThumb from "@/components/menu/ItemThumb";
 import PopularItems from "@/components/checkout/PopularItems";
 import { useCart } from "@/context/CartContext";
 import { useLocation } from "@/context/LocationContext";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import { SITE } from "@/data/site";
 import useScrollLock from "@/hooks/useScrollLock";
 

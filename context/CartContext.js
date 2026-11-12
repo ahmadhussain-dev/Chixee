@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { IF_UNAVAILABLE, ITEM_BY_ID, priceOf } from "@/data/menu";
+import { IF_UNAVAILABLE, priceOf } from "@/lib/menu";
+import { useCatalog } from "@/context/CatalogContext";
 
 const KEY = "chixee.cart.v1";
 const CartCtx = createContext(null);
@@ -12,6 +13,7 @@ const keyOf = (l) => lineKey(l.id, l.size, l.note);
 
 
 export function CartProvider({ children }) {
+  const { ITEM_BY_ID } = useCatalog();
   // lines: [{ id, size, qty, note, ifUnavailable }]
   const [lines, setLines] = useState([]);
   const [ready, setReady] = useState(false);
@@ -27,6 +29,8 @@ export function CartProvider({ children }) {
       setLines(saved.filter((l) => ITEM_BY_ID[l.id] && l.qty > 0));
     } catch {}
     setReady(true);
+    // Only on first load; later menu changes are handled by `detailed` below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -65,7 +69,7 @@ export function CartProvider({ children }) {
           return { ...l, key: keyOf(l), item, price, total: price * l.qty };
         })
         .filter(Boolean),
-    [lines]
+    [lines, ITEM_BY_ID]
   );
 
   const count = detailed.reduce((s, l) => s + l.qty, 0);

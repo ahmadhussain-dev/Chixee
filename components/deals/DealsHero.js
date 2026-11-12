@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ItemThumb from "@/components/menu/ItemThumb";
 import Icon from "@/components/ui/Icon";
 import { useItemModal } from "@/context/ItemModalContext";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 
 // Time left until midnight, shown on "today" deals. Rendered only after mount so server and browser HTML match.
 function UntilMidnight() {

@@ -1,6 +1,6 @@
 import DealsBrowser from "@/components/deals/DealsBrowser";
 import JsonLd from "@/components/seo/JsonLd";
-import { DEALS } from "@/data/menu";
+import { getCatalog } from "@/lib/catalog";
 import { SITE } from "@/data/site";
 
 export const metadata = {
@@ -9,7 +9,7 @@ export const metadata = {
   alternates: { canonical: "/deals" },
 };
 
-const offers = {
+const offers = (DEALS) => ({
   "@context": "https://schema.org",
   "@type": "OfferCatalog",
   name: `${SITE.name} deals`,
@@ -20,12 +20,13 @@ const offers = {
     price: d.p,
     priceCurrency: "PKR",
   })),
-};
+});
 
-export default function DealsPage() {
+export default async function DealsPage() {
+  const { DEALS } = await getCatalog();
   return (
     <main className="pb-28">
-      <JsonLd data={offers} />
+      <JsonLd data={offers(DEALS)} />
       <DealsBrowser />
     </main>
   );

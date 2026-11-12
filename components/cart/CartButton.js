@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import Icon from "@/components/ui/Icon";
 import { useCart } from "@/context/CartContext";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import useFooterGap from "@/hooks/useFooterGap";
 
 // Fixed bottom-right cart button with live item count. Hidden while the cart is empty.

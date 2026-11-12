@@ -3,7 +3,7 @@ import ItemThumb from "@/components/menu/ItemThumb";
 import Icon from "@/components/ui/Icon";
 import { useCart } from "@/context/CartContext";
 import { useItemModal } from "@/context/ItemModalContext";
-import { formatPKR, fromPrice } from "@/data/menu";
+import { formatPKR, fromPrice } from "@/lib/menu";
 
 // Small pill stepper used on cards once the item is in the cart.
 function CardStepper({ qty, onMinus, onPlus, name }) {
