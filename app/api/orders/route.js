@@ -6,6 +6,9 @@ import { ok, fail, route, readJson, clientIp } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { rateLimit } from "@/lib/rateLimit";
 import { log } from "@/lib/log";
+import { after } from "next/server";
+import { notifyAdmins } from "@/lib/push";
+import { formatPKR } from "@/lib/menu";
 import { clean, isEmail, isPhone, normalizePhone } from "@/lib/validate";
 import { IF_UNAVAILABLE, priceOf } from "@/lib/menu";
 import { getCatalogForOrder } from "@/lib/catalog";
@@ -104,5 +107,15 @@ export const POST = route(async (req, _ctx, { requestId }) => {
   if (!order) throw new Error("Could not create a unique order code");
   log.info("order.created", { requestId, code: order.code, total: order.total, type, payment: method, user: order.user?.toString() });
   publish(order.toObject());
+  // Phone notification to the admins after the response is sent, so the customer isn't kept waiting.
+  after(() =>
+    notifyAdmins({
+      title: `New order ${order.code} · ${formatPKR(order.total)}`,
+      body: `${name} · ${type === "pickup" ? "Pickup" : address.area} · ${lines.reduce((s, l) => s + l.qty, 0)} items${method === "transfer" ? " · transfer to verify" : ""}`,
+      url: "/admin",
+      tag: `order-${order.code}`,
+      sticky: true,
+    })
+  );
   return ok(publicOrder(order), { status: 201 });
 });

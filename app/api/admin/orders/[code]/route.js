@@ -4,6 +4,9 @@ import { ok, fail, route, readJson } from "@/lib/api";
 import { clean, isPhone, normalizePhone } from "@/lib/validate";
 import { publish } from "@/lib/orderEvents";
 import { adminOrder } from "@/lib/orders";
+import { after } from "next/server";
+import { customerMessage, notifyOrder } from "@/lib/push";
+import { log } from "@/lib/log";
 
 // Allowed next steps for each status
 const NEXT = {
@@ -16,7 +19,7 @@ const NEXT = {
   cancelled: [],
 };
 
-export const PATCH = route(async (req, { params }) => {
+export const PATCH = route(async (req, { params }, { session, requestId }) => {
   const { code } = await params;
   const b = await readJson(req);
   await dbConnect();
@@ -32,7 +35,8 @@ export const PATCH = route(async (req, { params }) => {
     order.rider = { name, phone };
   }
 
-  if (b.status && b.status !== order.status) {
+  const statusChanged = !!b.status && b.status !== order.status;
+  if (statusChanged) {
     if (!ORDER_STATUSES.includes(b.status) || !NEXT[order.status].includes(b.status))
       return fail(`Can't move an order from ${order.status} to ${b.status}.`, 409);
     if (b.status === "dispatched" && order.type === "delivery" && !order.rider?.name)
@@ -44,5 +48,10 @@ export const PATCH = route(async (req, { params }) => {
   await order.save();
   const o = order.toObject();
   publish(o);
+  if (statusChanged) {
+    log.info("order.status", { requestId, code: o.code, status: o.status, by: session.user.id });
+    const msg = customerMessage(o);
+    if (msg) after(() => notifyOrder(o.code, { ...msg, url: `/order/${o.code}`, tag: `order-${o.code}` }));
+  }
   return ok(adminOrder(o));
 }, { auth: "admin" });

@@ -8,6 +8,7 @@ import { SITE } from "@/data/site";
 import { STATUS_STEPS, stepLabel } from "@/lib/status";
 import { rememberOrder } from "@/lib/recent-orders";
 import { OrderSkeleton } from "@/components/ui/Skeleton";
+import { OrderPushPrompt } from "@/components/orders/PushToggle";
 
 const fmtTime = (d) => new Date(d).toLocaleTimeString("en-PK", { hour: "numeric", minute: "2-digit" });
 
@@ -50,6 +51,7 @@ export default function OrderTracker({ code, isNew }) {
           <p><b>Thank you, {order.customerName}!</b> Your order has been placed. Keep this page open to follow it.</p>
         </div>
       )}
+      {!finished && !cancelled && <OrderPushPrompt code={order.code} />}
       <div className="card p-6 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>

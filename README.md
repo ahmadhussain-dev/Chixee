@@ -12,6 +12,7 @@ Online ordering site for Chixee Broast, Kohinoor City, Faisalabad. Built with Ne
 - **Accounts**: sign up, sign in with email or mobile number, forgot password and reset password by email (Resend). Reset links expire after 30 minutes and work once.
 - **Admin panel** at `/admin` (admin accounts only): live orders with Accept / Start preparing / Food is ready / Dispatch with rider details / Mark delivered / Cancel, payment verification for transfers, daily / weekly / monthly reports (revenue, items sold with prices, COD vs online), delivery areas (name, ETA, fee, active), and payment details.
 - **Menu items and deals in the admin panel** (`/admin/menu`, `/admin/deals`): add, edit, hide or delete items and deals, change prices and sizes, and upload photos (Vercel Blob). Changes appear on the site straight away. The first run copies the starting menu from `data/menu.js` and `data/deals.js` into MongoDB; after that the database is the source of truth. Public menu API: `GET /api/menu`.
+- **Phone notifications (Web Push, Android)**: the admin turns on "new-order alerts" on the Orders page and gets a notification for every new order, even with the panel closed. Customers tap "Notify me" on their order page and get notified when the order is accepted, ready for pickup, on the way, delivered or cancelled. Keys are created automatically and stored in MongoDB (or set `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`).
 - **SEO**: page metadata, Open Graph, `sitemap.xml`, `robots.txt`, web manifest and Restaurant + Menu structured data.
 
 ## Getting started
