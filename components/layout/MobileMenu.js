@@ -16,7 +16,8 @@ export default function MobileMenu() {
   const [mounted, setMounted] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- portal target exists only after mount
   useEffect(() => setMounted(true), []);
-  const { data: session } = useSession();
+  const { data: rawSession } = useSession();
+  const session = rawSession?.user ? rawSession : null; // an expired session has no user
   const pathname = usePathname();
   useScrollLock(open);
 

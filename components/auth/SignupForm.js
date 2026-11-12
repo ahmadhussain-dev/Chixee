@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PasswordInput from "@/components/auth/PasswordInput";
 import { FormError } from "@/components/auth/AuthCard";
+import GoogleButton from "@/components/auth/GoogleButton";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function SignupForm() {
 
   return (
     <form onSubmit={onSubmit} className="grid gap-2.5 sm:gap-3 [&_.input]:py-2.5 sm:[&_.input]:py-3">
+      <GoogleButton next={next} label="Sign up with Google" />
       <FormError>{error}</FormError>
       <label className="label">Full name<input name="name" required minLength={2} autoComplete="name" placeholder="Your name" className="input" /></label>
       <label className="label">Mobile number<input name="phone" type="tel" required autoComplete="tel" placeholder="03XX XXXXXXX" className="input" /></label>

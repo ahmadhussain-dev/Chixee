@@ -5,6 +5,7 @@ import User from "@/models/User";
 import { ok, fail, handle, readJson, clientIp } from "@/lib/api";
 import { rateLimit } from "@/lib/rateLimit";
 import { log } from "@/lib/log";
+import { revokeAllForUser } from "@/lib/tokens";
 import { isStrongPassword } from "@/lib/validate";
 
 export const POST = handle(async (req) => {
@@ -26,6 +27,7 @@ export const POST = handle(async (req) => {
   user.resetTokenHash = undefined;
   user.resetTokenExpires = undefined;
   await user.save();
+  await revokeAllForUser(user._id); // sign out every device that was logged in with the old password
   log.info("auth.password_reset", { userId: user._id.toString() });
   return ok({ ok: true });
 });
