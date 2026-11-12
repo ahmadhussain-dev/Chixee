@@ -10,6 +10,8 @@ const logout = () => signOut({ redirect: false }).then(() => window.location.ass
 
 const LINKS = [
   ["/admin", "list", "Orders"],
+  ["/admin/menu", "bag", "Menu items"],
+  ["/admin/deals", "box", "Deals"],
   ["/admin/reports", "chart", "Reports"],
   ["/admin/areas", "pin", "Delivery areas"],
   ["/admin/settings", "gear", "Payment & store"],

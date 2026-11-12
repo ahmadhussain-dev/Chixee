@@ -23,7 +23,7 @@ export const DEAL_GROUPS = [
 ];
 
 // serves: how many people the deal feeds (badge on the card). parts: [menu item id, qty, size?]
-export const DEAL_SPECS = [
+const DEAL_SPECS = [
   { n: "Family Broast Feast", serves: 4, group: "family", p: 2999, featured: true, badge: "Deal of the day", img: "",
     parts: [["broast-full-broast", 1], ["burgers-french-fries-regular", 2], ["drinks-regular-drink", 4]] },
   { n: "Broast Combo", serves: 1, group: "today", p: 699, featured: true, badge: "Today only", img: "",
@@ -49,3 +49,21 @@ export const DEAL_SPECS = [
   { n: "Brownie & Chai", serves: 1, group: "late", when: "11 PM to 2 AM", p: 429, badge: "Late night", img: "",
     parts: [["chai-chaialogy-special", 1], ["desserts-fudge-brownie", 1]] },
 ];
+
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+// Deals in the stored shape (used once to fill the database; the admin panel manages them after that).
+export const SEED_DEALS = DEAL_SPECS.map((d, i) => ({
+  key: `deals-${slug(d.n)}`,
+  group: d.group,
+  n: d.n,
+  p: d.p,
+  serves: d.serves || 1,
+  when: d.when || "",
+  badge: d.badge || "",
+  featured: !!d.featured,
+  img: d.img || "",
+  parts: d.parts.map(([item, qty, size]) => ({ item, qty, size: size || "" })),
+  active: true,
+  sort: i,
+}));

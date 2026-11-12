@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import useEventStream from "@/hooks/useEventStream";
 import Icon from "@/components/ui/Icon";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import { SITE } from "@/data/site";
 import { STATUS_STEPS, stepLabel } from "@/lib/status";
 import { rememberOrder } from "@/lib/recent-orders";

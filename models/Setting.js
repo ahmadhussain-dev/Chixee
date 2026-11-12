@@ -11,6 +11,7 @@ const SettingSchema = new Schema(
     jazzcashNumber: { type: String, default: "" },
     jazzcashTitle: { type: String, default: "" },
     acceptingOrders: { type: Boolean, default: true },
+    catalogSeeded: { type: Boolean, default: false }, // the starting menu has been copied into the database once
   },
   { timestamps: true }
 );

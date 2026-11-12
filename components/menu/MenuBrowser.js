@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BadgePercent, CakeSlice, CirclePlus, Coffee, CupSoda, Drumstick, Fish, Hamburger, Pizza, Utensils } from "lucide-react";
 import Icon from "@/components/ui/Icon";
 import MenuItemCard from "@/components/menu/MenuItemCard";
-import { MENU, ITEMS } from "@/data/menu";
+import { useCatalog } from "@/context/CatalogContext";
 import { BackToTop, SearchButton, smooth } from "@/components/ui/FloatingButtons";
 
 // Lucide icons for the Explore Menu tiles (stroke 1.5, brand maroon #A3161B, 40px on tablet/desktop).
@@ -15,8 +15,9 @@ const tileCls = () =>
 const iconCls = () => "size-8 transition-all duration-300 group-hover/tab:scale-110 sm:size-10 lg:size-7";
 
 export default function MenuBrowser() {
+  const { MENU, ITEMS } = useCatalog();
   const [q, setQ] = useState("");
-  const [active, setActive] = useState(MENU[0].id);
+  const [active, setActive] = useState(MENU[0]?.id);
   const [stuck, setStuck] = useState(false);
   const tabsRef = useRef(null);
   const sentinelRef = useRef(null);
@@ -29,7 +30,7 @@ export default function MenuBrowser() {
       ...c,
       list: ITEMS.filter((i) => i.category === c.id && (!v || `${i.n} ${i.d} ${c.name}`.toLowerCase().includes(v))),
     }));
-  }, [q]);
+  }, [q, MENU, ITEMS]);
   const anyMatch = sections.some((s) => s.list.length);
 
   // "Stuck" = the category bar has reached the top of the screen.
@@ -47,7 +48,7 @@ export default function MenuBrowser() {
   // Scrollspy: highlight the category currently under the sticky bar.
   useEffect(() => {
     const spy = () => {
-      let id = MENU[0].id;
+      let id = MENU[0]?.id;
       for (const c of MENU) {
         const el = document.getElementById(c.id);
         if (el && el.getBoundingClientRect().top - 130 <= 0) id = c.id;
@@ -57,7 +58,7 @@ export default function MenuBrowser() {
     spy();
     addEventListener("scroll", spy, { passive: true });
     return () => removeEventListener("scroll", spy);
-  }, [q]);
+  }, [q, MENU]);
 
   // Keep the active category tile scrolled into view in the bar.
   useEffect(() => {

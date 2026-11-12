@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
 import { OrderRowsSkeleton } from "@/components/ui/Skeleton";
 

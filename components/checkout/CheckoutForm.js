@@ -11,7 +11,7 @@ import PhoneInput, { fromLocalDisplay, toLocalDisplay } from "@/components/check
 import { FormError } from "@/components/auth/AuthCard";
 import { useCart } from "@/context/CartContext";
 import { useLocation } from "@/context/LocationContext";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import { SITE } from "@/data/site";
 import AutoTextarea from "@/components/ui/AutoTextarea";
 

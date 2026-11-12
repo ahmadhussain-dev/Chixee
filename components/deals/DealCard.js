@@ -3,7 +3,7 @@ import { Plus, Trash2, Users } from "lucide-react";
 import ItemThumb from "@/components/menu/ItemThumb";
 import { useCart } from "@/context/CartContext";
 import { useItemModal } from "@/context/ItemModalContext";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 
 // Deal card on /deals: "% OFF" tag, photo with a "serves" badge, name and contents,
 // crossed-out menu price above the deal price, and a round + button (a − qty + stepper once added).

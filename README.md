@@ -11,6 +11,7 @@ Online ordering site for Chixee Broast, Kohinoor City, Faisalabad. Built with Ne
 - **Order tracking** page that refreshes every 15 seconds: pending → accepted → preparing → ready → rider on the way (with rider name and number) → delivered. Signed-in customers also get **My orders**.
 - **Accounts**: sign up, sign in with email or mobile number, forgot password and reset password by email (Resend). Reset links expire after 30 minutes and work once.
 - **Admin panel** at `/admin` (admin accounts only): live orders with Accept / Start preparing / Food is ready / Dispatch with rider details / Mark delivered / Cancel, payment verification for transfers, daily / weekly / monthly reports (revenue, items sold with prices, COD vs online), delivery areas (name, ETA, fee, active), and payment details.
+- **Menu items and deals in the admin panel** (`/admin/menu`, `/admin/deals`): add, edit, hide or delete items and deals, change prices and sizes, and upload photos (Vercel Blob). Changes appear on the site straight away. The first run copies the starting menu from `data/menu.js` and `data/deals.js` into MongoDB; after that the database is the source of truth. Public menu API: `GET /api/menu`.
 - **SEO**: page metadata, Open Graph, `sitemap.xml`, `robots.txt`, web manifest and Restaurant + Menu structured data.
 
 ## Getting started
@@ -30,6 +31,7 @@ npm run dev                  # http://localhost:3000
 | `NEXTAUTH_SECRET` | Any long random string (`openssl rand -base64 32`) |
 | `NEXTAUTH_URL` / `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` locally, your domain in production |
 | `RESEND_API_KEY`, `EMAIL_FROM` | For reset-password emails. Without a key, the reset link is printed in the server console. |
+| `BLOB_READ_WRITE_TOKEN` | For photo uploads from the admin panel. Added automatically when you connect a Blob store to the project in Vercel (Storage tab). |
 | `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PHONE`, `ADMIN_PASSWORD` | Used once by `npm run seed` to create the admin login |
 
 ## Images

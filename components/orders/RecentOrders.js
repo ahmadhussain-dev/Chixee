@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ChevronRight, Package } from "lucide-react";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import { getRecentOrders } from "@/lib/recent-orders";
 
 const when = (d) => new Date(d).toLocaleString("en-PK", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });

@@ -7,14 +7,11 @@ import DealCard from "@/components/deals/DealCard";
 import DealsHero from "@/components/deals/DealsHero";
 import Icon from "@/components/ui/Icon";
 import { BackToTop, SearchButton, smooth } from "@/components/ui/FloatingButtons";
-import { DEAL_GROUPS, DEALS } from "@/data/menu";
+import { useCatalog } from "@/context/CatalogContext";
 import { IMAGES } from "@/data/images";
 
 const GROUP_ICONS = { Flame, CalendarDays, Hamburger, Users, Moon };
-const GROUPS = DEAL_GROUPS.map((g) => ({ ...g, list: DEALS.filter((d) => d.group === g.id) })).filter((g) => g.list.length);
-const FEATURED = DEALS.filter((d) => d.featured);
 const PROMO = { id: "promo-late", promo: true, img: IMAGES.heroBroast, kicker: "Late cravings?", title: "Open till", highlight: "2 AM", text: "Delivery & pickup every day" };
-const SLIDES = [PROMO, ...(FEATURED.length ? FEATURED : DEALS.slice(0, 3))];
 
 // Strip under a group heading: the owner's banner photo if set, otherwise big text with the items' cut-outs.
 function GroupBanner({ banner, icon: BIcon }) {
@@ -49,6 +46,12 @@ function GroupBanner({ banner, icon: BIcon }) {
 // /deals: promo + deals carousel, a maroon Deal Categories panel (tiles + search), sticky chips once it scrolls away,
 // then each group with its heading, banner and a grid of deal cards (same maroon + yellow card in every group).
 export default function DealsBrowser() {
+  const { DEAL_GROUPS, DEALS } = useCatalog();
+  const GROUPS = useMemo(() => DEAL_GROUPS.map((g) => ({ ...g, list: DEALS.filter((d) => d.group === g.id) })).filter((g) => g.list.length), [DEAL_GROUPS, DEALS]);
+  const SLIDES = useMemo(() => {
+    const featured = DEALS.filter((d) => d.featured);
+    return [PROMO, ...(featured.length ? featured : DEALS.slice(0, 3))];
+  }, [DEALS]);
   const [q, setQ] = useState("");
   const [active, setActive] = useState(GROUPS[0]?.id);
   const searchRef = useRef(null);
@@ -58,7 +61,7 @@ export default function DealsBrowser() {
   const groups = useMemo(() => {
     const v = q.trim().toLowerCase();
     return GROUPS.map((g) => ({ ...g, shown: g.list.filter((d) => !v || `${d.n} ${d.d} ${g.name}`.toLowerCase().includes(v)) }));
-  }, [q]);
+  }, [q, GROUPS]);
   const anyMatch = groups.some((g) => g.shown.length);
   const [stuck, setStuck] = useState(false);
   const sentinelRef = useRef(null);
@@ -84,7 +87,7 @@ export default function DealsBrowser() {
     spy();
     addEventListener("scroll", spy, { passive: true });
     return () => removeEventListener("scroll", spy);
-  }, [q]);
+  }, [q, GROUPS]);
 
   // Arriving from a home "Hot Deals" card (/deals#deals-weekly): land on that category once the page has laid out.
   useEffect(() => {

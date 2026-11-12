@@ -3,9 +3,10 @@ import Order from "@/models/Order";
 import Area from "@/models/Area";
 import Setting from "@/models/Setting";
 import { getSession } from "@/lib/auth";
-import { ok, fail, handle } from "@/lib/api";
+import { ok, fail, handle, readJson } from "@/lib/api";
 import { clean, isEmail, isPhone, normalizePhone } from "@/lib/validate";
-import { IF_UNAVAILABLE, ITEM_BY_ID, priceOf } from "@/data/menu";
+import { IF_UNAVAILABLE, priceOf } from "@/lib/menu";
+import { getCatalogForOrder } from "@/lib/catalog";
 import { orderCode, publicOrder } from "@/lib/orders";
 import { SITE } from "@/data/site";
 import { publish } from "@/lib/orderEvents";
@@ -22,7 +23,7 @@ export const GET = handle(async () => {
 });
 
 export const POST = handle(async (req) => {
-  const b = await req.json();
+  const b = await readJson(req);
   const session = await getSession();
 
   const type = b.type === "pickup" ? "pickup" : "delivery";
@@ -40,7 +41,10 @@ export const POST = handle(async (req) => {
   if (email && !isEmail(email)) return fail("Please enter a valid email or leave it empty.");
   if (method === "transfer" && transactionId.length < 4) return fail("Please enter the transaction ID of your transfer.");
 
-  // Rebuild the cart from the menu file so prices come from the server, not the browser.
+  // Rebuild the cart from the stored menu so prices come from the server, not the browser.
+  // Hidden items and deals aren't in the catalog, so they can't be ordered.
+  await dbConnect();
+  const { ITEM_BY_ID } = await getCatalogForOrder();
   const lines = [];
   for (const raw of Array.isArray(b.items) ? b.items.slice(0, 60) : []) {
     const item = ITEM_BY_ID[raw.id];
@@ -54,9 +58,8 @@ export const POST = handle(async (req) => {
     const lineName = item.category === "deals" ? `${item.n} (${item.d})` : item.n;
     lines.push({ itemId: item.id, name: lineName, size, price, qty, total: price * qty, note, ifUnavailable });
   }
-  if (!lines.length) return fail("Your cart is empty.");
+  if (!lines.length) return fail("Your cart is empty, or its items are no longer on the menu.");
 
-  await dbConnect();
   const settings = await Setting.findOne({ key: "store" }).lean();
   if (settings && settings.acceptingOrders === false) return fail("Sorry, we're not taking online orders right now. Please call " + SITE.uan + ".");
 

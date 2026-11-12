@@ -1,15 +1,11 @@
-// Single source of truth for menu items and prices.
-// Photos: originals in public/images/menu/, background-removed cut-outs (shown on the yellow tiles) in public/images/menu-cut/.
-// Items with an empty `img` (or none) show a branded yellow tile instead.
-// The server recalculates every order total from this file, so prices can't be changed from the browser.
-
-// NOTE: soft drink flavours follow the drink photos; confirm with the owner which ones are stocked.
-import { DEAL_GROUPS as RAW_GROUPS, DEAL_SPECS } from "@/data/deals";
-import IMAGE_VERSIONS from "@/data/image-versions.json";
+// Starting menu. Since the admin panel can add, edit, hide and delete items (stored in MongoDB),
+// this file is only used to fill the database the first time, and as a fallback if the database is down.
+// Category headings (name, icon, note) still live here. Helpers and the catalog builder: lib/menu.js.
+// Photos: background-removed cut-outs in public/images/menu-cut/.
 
 const SOFT_DRINKS = ["Coca-Cola", "Sprite", "Fanta"];
 
-export const MENU = [
+const MENU = [
   { id: "broast", name: "Broast", script: "Authentic", glyph: "drum", note: "Leg, thigh, wing and chest pieces, injected and pressure fried.", items: [
     { n: "Quarter Broast", d: "2 Pc chicken (leg & thigh), French fries, bun, 1 reg garlic", p: 750, img: "/images/menu-cut/quarter-broast.webp" , loading:"eager" },
     { n: "Half Broast", d: "4 Pc chicken (leg, thigh, wing, chest), French fries, 2 buns, 1 reg garlic, 1 spicy garlic", p: 1450, tag: "Popular", img: "/images/menu-cut/half-broast.webp", popular: true },
@@ -69,84 +65,33 @@ export const MENU = [
   ]},
 ];
 
+
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-// Flatten with stable ids, e.g. "broast-half-broast"
-// Meal upgrades for burgers, wraps and sandwiches are priced from the menu's own fries and regular drink.
-const FRIES_PRICE = 220;
-const DRINK_PRICE = 100;
+// Category headings in menu order (items are added from the admin panel).
+export const CATEGORIES = MENU.map(({ items, ...c }) => c);
 
-// Every choice an item offers becomes a "size" (name -> price), so the cart, checkout and server
-// all price variations the same way.
-function variationsOf(it) {
-  if (it.sizes) return { sizes: it.sizes, variationLabel: "Choose a size" };
-  if (it.meal)
-    return {
-      sizes: { "On its own": it.p, "With regular fries": it.p + FRIES_PRICE, "With fries & regular drink": it.p + FRIES_PRICE + DRINK_PRICE },
-      variationLabel: "Make it a meal",
-    };
-  if (it.flavours) return { sizes: Object.fromEntries(it.flavours.map((f) => [f, it.p])), variationLabel: "Choose a flavour" };
-  return {};
-}
-
-// Adds the photo's content hash (scripts/image-versions.mjs) to its URL, so a photo replaced under the
-// same file name shows up straight away on every device instead of an old cached copy.
-export const fresh = (src) => (src && IMAGE_VERSIONS[src] ? `${src}?v=${IMAGE_VERSIONS[src]}` : src);
-
-export const ITEMS = MENU.flatMap((c) =>
-  c.items.map((it) => ({
-    ...it,
-    ...variationsOf(it),
-    id: `${c.id}-${slug(it.n)}`,
+// Items in the stored shape. Keys keep the old "<category>-<name>" ids so carts and orders stay valid.
+export const SEED_ITEMS = MENU.flatMap((c) =>
+  c.items.map((it, i) => ({
+    key: `${c.id}-${slug(it.n)}`,
     category: c.id,
-    categoryName: c.name,
-    glyph: it.glyph || c.glyph,
-    img: fresh(it.img),
+    n: it.n,
+    d: it.d || "",
+    p: it.p ?? null,
+    sizes: it.sizes ? Object.entries(it.sizes).map(([name, price]) => ({ name, price })) : [],
+    meal: !!it.meal,
+    flavours: it.flavours || [],
+    tag: it.tag || "",
+    popular: !!it.popular,
+    img: it.img || "",
+    active: true,
+    sort: i,
   }))
 );
 
-const MENU_BY_ID = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
-
-export const priceOf = (item, size) =>
-  item.sizes ? item.sizes[size] ?? Object.values(item.sizes)[0] : item.p;
-
-// Deals (data/deals.js) become orderable items too, with their contents and the menu total they save on.
-
-export const DEALS = DEAL_SPECS.map((d) => {
-  const parts = d.parts
-    .map(([id, qty, size]) => ({ item: MENU_BY_ID[id], qty, size }))
-    .filter((x) => x.item);
-  const was = parts.reduce((s, x) => s + priceOf(x.item, x.size) * x.qty, 0);
-  return {
-    ...d,
-    img: fresh(d.img),
-    id: `deals-${slug(d.n)}`,
-    category: "deals",
-    categoryName: "Deals",
-    glyph: "tag",
-    d: parts.map((x) => `${x.qty > 1 ? `${x.qty} × ` : ""}${x.item.n}${x.size ? ` (${x.size})` : ""}`).join(", "),
-    was: was > d.p ? was : null,
-    // cut-out photos of what's inside, used until a deal photo is set in public/images/dealmenu/
-    art: parts.map((x) => x.item.img).filter(Boolean),
-  };
-});
-
-// Group banners get the cut-out photos of the items they name.
-export const DEAL_GROUP_LIST = RAW_GROUPS.map((g) => ({
-  ...g,
-  banner: g.banner ? { ...g.banner, img: fresh(g.banner.img), artImgs: g.banner.art.map((id) => MENU_BY_ID[id]?.img).filter(Boolean) } : null,
-}));
-export { DEAL_GROUP_LIST as DEAL_GROUPS };
-
-export const ITEM_BY_ID = { ...MENU_BY_ID, ...Object.fromEntries(DEALS.map((d) => [d.id, d])) };
-
-export const defaultSize = (item) => (item.sizes ? Object.keys(item.sizes)[0] : null);
-
-// Lowest price an item can be ordered at ("from Rs. …" on the menu card).
-export const fromPrice = (item) => (item.sizes ? Math.min(...Object.values(item.sizes)) : item.p);
-
 // "Frequently bought together" suggestions per category (item ids, optionally with a fixed variation).
-const FBT = {
+export const FBT = {
   broast: ["drinks-regular-drink", "drinks-drink-500-ml", "addons-garlic-sauce", "addons-spicy-garlic", "desserts-extra-bun", "burgers-french-fries-regular", "desserts-fudge-brownie"],
   fish: ["drinks-regular-drink", "drinks-drink-500-ml", "addons-garlic-sauce", "addons-spicy-garlic", "drinks-lemonade", "desserts-fudge-brownie"],
   pizza: ["drinks-drink-500-ml", "drinks-regular-drink", "addons-garlic-sauce", "addons-spicy-garlic", "burgers-french-fries-regular", "desserts-chocolate-cookies"],
@@ -157,15 +102,6 @@ const FBT = {
   addons: ["burgers-french-fries-regular", "drinks-regular-drink"],
   deals: ["addons-garlic-sauce", "addons-spicy-garlic", "drinks-mint-margarita", "desserts-fudge-brownie", "desserts-extra-bun"],
 };
-export const frequentlyBoughtWith = (item) =>
-  (FBT[item.category] || []).filter((id) => id !== item.id && ITEM_BY_ID[id]).map((id) => ITEM_BY_ID[id]);
-
-export const imgSrc = (item) => item.img || item.art?.[0] || null; // e.g. "/images/menu-cut/half-broast.webp"
-
-export const POPULAR = ITEMS.filter((i) => i.popular);
-
-export const formatPKR = (n) => "Rs. " + Number(n || 0).toLocaleString("en-PK");
-
 // What to do if an item is out of stock (chosen in the item popup, shown to the admin).
 export const IF_UNAVAILABLE = {
   remove: "Remove it from my order",

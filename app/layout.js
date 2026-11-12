@@ -1,6 +1,7 @@
 import { Caveat, Lilita_One, Poppins } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Providers from "@/components/providers/Providers";
+import { getCatalogRaw } from "@/lib/catalog";
 import { SITE } from "@/data/site";
 import { IMAGES } from "@/data/images";
 import "./globals.css";
@@ -32,12 +33,14 @@ export const metadata = {
 
 export const viewport = { themeColor: "#FFC20E", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // Menu and deals from the database (cached; refreshed the moment the admin saves a change).
+  const catalog = await getCatalogRaw();
   return (
     <html lang="en" className={`${lilita.variable} ${poppins.variable} ${caveat.variable}`} suppressHydrationWarning>
       {/* suppressHydrationWarning: browser extensions (Grammarly, translators, dark mode…) add attributes to <html>/<body> before React loads */}
       <body suppressHydrationWarning>
-        <Providers>{children}</Providers>
+        <Providers catalog={catalog}>{children}</Providers>
         {/* Vercel Speed Insights: real-visitor page speed, shown in the Vercel dashboard (no-op locally) */}
         <SpeedInsights />
       </body>

@@ -2,7 +2,7 @@
 import { CalendarDays, Clock, Crown, Hamburger, Moon, ShoppingCart, Users } from "lucide-react";
 import Link from "next/link";
 import ItemThumb from "@/components/menu/ItemThumb";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 
 // Badge icon per deal group; the "Deal of the day" gets a crown.
 const BADGE_ICON = { today: Clock, weekly: CalendarDays, combos: Hamburger, family: Users, late: Moon };

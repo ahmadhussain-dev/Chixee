@@ -4,7 +4,8 @@ import ItemThumb from "@/components/menu/ItemThumb";
 import Icon from "@/components/ui/Icon";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
-import { IF_UNAVAILABLE, defaultSize, formatPKR, frequentlyBoughtWith, fromPrice, priceOf } from "@/data/menu";
+import { IF_UNAVAILABLE, defaultSize, formatPKR, fromPrice, priceOf } from "@/lib/menu";
+import { useCatalog } from "@/context/CatalogContext";
 import useScrollLock from "@/hooks/useScrollLock";
 import AutoTextarea from "@/components/ui/AutoTextarea";
 
@@ -37,6 +38,7 @@ export default function ItemModal({ item, onClose }) {
   const nextRef = useRef(null);
   const closeRef = useRef(null);
 
+  const { frequentlyBoughtWith } = useCatalog();
   const suggestions = frequentlyBoughtWith(item);
   const shown = showAll ? suggestions : suggestions.slice(0, SHOW_FIRST);
   const needsVariation = options && !variation;

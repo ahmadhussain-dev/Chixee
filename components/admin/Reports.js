@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { formatPKR } from "@/data/menu";
+import { formatPKR } from "@/lib/menu";
 import { ReportsSkeleton } from "@/components/ui/Skeleton";
 
 const PERIODS = [["daily", "Today"], ["weekly", "This week"], ["monthly", "This month"]];
