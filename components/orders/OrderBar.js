@@ -21,7 +21,8 @@ const shortLabel = (o) => (o.status === "ready" && o.type === "pickup" ? "Ready 
 // because the order number is remembered on this device (lib/recent-orders).
 export default function OrderBar() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: rawSession } = useSession();
+  const session = rawSession?.user ? rawSession : null; // an expired session has no user
   const footerGap = useFooterGap();
   const [code, setCode] = useState(null);
   const [order, setOrder] = useState(null);

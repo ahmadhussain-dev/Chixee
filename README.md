@@ -33,6 +33,7 @@ npm run dev                  # http://localhost:3000
 | `NEXTAUTH_URL` / `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` locally, your domain in production |
 | `RESEND_API_KEY`, `EMAIL_FROM` | For reset-password emails. Without a key, the reset link is printed in the server console. |
 | `BLOB_READ_WRITE_TOKEN` | For photo uploads from the admin panel. Added automatically when you connect a Blob store to the project in Vercel (Storage tab). |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional. Turns on "Continue with Google" (Google Cloud Console → Credentials → OAuth client ID, redirect URI `<site>/api/auth/callback/google`). |
 | `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PHONE`, `ADMIN_PASSWORD` | Used once by `npm run seed` to create the admin login |
 
 ## Images

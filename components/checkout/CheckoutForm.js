@@ -29,7 +29,8 @@ function Section({ title, action, children }) {
 
 export default function CheckoutForm() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: rawSession, status } = useSession();
+  const session = rawSession?.user ? rawSession : null; // an expired session has no user
   const { lines, subtotal, count, setLineQty, clear, ready: cartReady } = useCart();
   const { location, setModalOpen } = useLocation();
   const pickup = location?.type === "pickup";

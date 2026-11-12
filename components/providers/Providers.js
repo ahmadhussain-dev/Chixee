@@ -3,6 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import { ToastProvider } from "@/context/ToastContext";
 import { CartProvider } from "@/context/CartContext";
 import { CatalogProvider } from "@/context/CatalogContext";
+import SessionGuard from "@/components/auth/SessionGuard";
 import { LocationProvider } from "@/context/LocationContext";
 
 export default function Providers({ catalog, children }) {
@@ -10,6 +11,7 @@ export default function Providers({ catalog, children }) {
     // No session refetch on every tab focus: one check on load is enough for this site.
     <CatalogProvider raw={catalog}>
       <SessionProvider refetchOnWindowFocus={false}>
+        <SessionGuard />
         <ToastProvider>
           <LocationProvider>
             <CartProvider>{children}</CartProvider>

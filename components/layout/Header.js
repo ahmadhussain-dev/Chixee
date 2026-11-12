@@ -60,7 +60,8 @@ function Avatar({ user }) {
 }
 
 function UserMenu() {
-  const { data: session, status } = useSession();
+  const { data: rawSession, status } = useSession();
+  const session = rawSession?.user ? rawSession : null; // an expired session has no user
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   useEffect(() => {

@@ -4,7 +4,15 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PasswordInput from "@/components/auth/PasswordInput";
+import GoogleButton from "@/components/auth/GoogleButton";
 import { FormError, FormSuccess } from "@/components/auth/AuthCard";
+
+// Errors NextAuth sends back to /login?error=…
+const OAUTH_ERRORS = {
+  GoogleEmail: "Your Google account has no verified email. Please sign up with email instead.",
+  AccessDenied: "Google sign-in was cancelled.",
+  OAuthCallback: "Google sign-in was cancelled or timed out. Please try again.",
+};
 
 export default function LoginForm() {
   const router = useRouter();
@@ -31,6 +39,8 @@ export default function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="grid gap-3">
       <FormSuccess>{notice}</FormSuccess>
+      <FormError>{OAUTH_ERRORS[params.get("error")] || (params.get("error") ? "Google sign-in didn't work. Please try again or use your email." : "")}</FormError>
+      <GoogleButton next={next} />
       <FormError>{error}</FormError>
       <label className="label">Email or mobile number<input name="identifier" required autoComplete="username" placeholder="you@email.com or 03XX XXXXXXX" className="input" /></label>
       <div className="label">
