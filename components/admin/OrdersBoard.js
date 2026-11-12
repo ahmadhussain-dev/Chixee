@@ -6,6 +6,7 @@ import Icon from "@/components/ui/Icon";
 import { IF_UNAVAILABLE, formatPKR } from "@/lib/menu";
 import { STATUS_COLOR, stepLabel } from "@/lib/status";
 import { AdminOrdersSkeleton } from "@/components/ui/Skeleton";
+import { AdminPushToggle } from "@/components/orders/PushToggle";
 
 const FILTERS = [["active", "Active"], ["pending", "Pending"], ["preparing", "Preparing"], ["dispatched", "Dispatched"], ["delivered", "Delivered"], ["cancelled", "Cancelled"], ["all", "All"]];
 
@@ -200,6 +201,7 @@ export default function OrdersBoard() {
           <span className="flex items-center gap-1.5 text-sm text-muted"><span className={`size-2.5 rounded-full ${live ? "bg-green-500" : "bg-line"}`} />{live ? "Live" : "Connecting…"}</span>
         </div>
       </div>
+      <AdminPushToggle />
       <div className="no-scrollbar mb-5 flex gap-2 overflow-x-auto">
         {FILTERS.map(([k, label]) => (
           <button key={k} onClick={() => setFilter(k)} className={`flex-none rounded-full px-4 py-2 text-sm font-semibold transition ${filter === k ? "bg-maroon text-white" : "bg-white text-ink ring-1 ring-line hover:ring-maroon"}`}>{label}</button>

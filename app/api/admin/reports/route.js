@@ -1,7 +1,6 @@
 import { dbConnect } from "@/lib/db";
 import Order from "@/models/Order";
-import { requireAdmin } from "@/lib/auth";
-import { ok, fail, handle } from "@/lib/api";
+import { ok, fail, route } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +16,7 @@ function rangeFor(period) {
   return new Date(start.getTime() - OFFSET);
 }
 
-export const GET = handle(async (req) => {
-  if (!(await requireAdmin())) return fail("Admins only.", 403);
+export const GET = route(async (req) => {
   const { searchParams } = new URL(req.url);
   const period = ["daily", "weekly", "monthly"].includes(searchParams.get("period")) ? searchParams.get("period") : "daily";
   const from = rangeFor(period);
@@ -66,4 +64,4 @@ export const GET = handle(async (req) => {
     items: items.map((i) => ({ name: i._id.name, size: i._id.size, qty: i.qty, price: i.price, revenue: i.revenue })),
     byDay: byDay.map((d) => ({ day: d._id, orders: d.orders, revenue: d.revenue })),
   });
-});
+}, { auth: "admin" });

@@ -1,16 +1,13 @@
 import { dbConnect } from "@/lib/db";
 import MenuItem from "@/models/MenuItem";
 import Deal from "@/models/Deal";
-import { requireAdmin } from "@/lib/auth";
-import { ok, fail, handle, readJson } from "@/lib/api";
+import { ok, fail, route, readJson } from "@/lib/api";
 import { refreshCatalog } from "@/lib/catalog";
 import { parseItem } from "@/lib/menu-admin";
 import { log } from "@/lib/log";
 
 // Edit an item. Send the whole item, or just { active } to show/hide it.
-export const PATCH = handle(async (req, { params }) => {
-  const admin = await requireAdmin();
-  if (!admin) return fail("Admins only.", 403);
+export const PATCH = route(async (req, { params }, { session: admin }) => {
   const { key } = await params;
   const b = await readJson(req);
   await dbConnect();
@@ -27,12 +24,10 @@ export const PATCH = handle(async (req, { params }) => {
   refreshCatalog();
   log.info("menu.item_updated", { key, by: admin.user.email });
   return ok(item.toObject());
-});
+}, { auth: "admin" });
 
 // Delete an item. Refused while a deal still includes it.
-export const DELETE = handle(async (_req, { params }) => {
-  const admin = await requireAdmin();
-  if (!admin) return fail("Admins only.", 403);
+export const DELETE = route(async (_req, { params }, { session: admin }) => {
   const { key } = await params;
   await dbConnect();
   const inDeals = await Deal.find({ "parts.item": key }).select("n").lean();
@@ -43,4 +38,4 @@ export const DELETE = handle(async (_req, { params }) => {
   refreshCatalog();
   log.info("menu.item_deleted", { key, by: admin.user.email });
   return ok({ ok: true });
-});
+}, { auth: "admin" });

@@ -1,11 +1,14 @@
 import bcrypt from "bcryptjs";
 import { dbConnect } from "@/lib/db";
 import User from "@/models/User";
-import { ok, fail, handle } from "@/lib/api";
+import { ok, fail, handle, readJson, clientIp } from "@/lib/api";
+import { rateLimit } from "@/lib/rateLimit";
+import { log } from "@/lib/log";
 import { clean, isEmail, isPhone, isStrongPassword, normalizePhone } from "@/lib/validate";
 
 export const POST = handle(async (req) => {
-  const body = await req.json();
+  await rateLimit(`signup:${clientIp(req)}`, { limit: 5, windowSec: 3600, message: "Too many sign-ups from this connection. Please try again in an hour." });
+  const body = await readJson(req);
   const name = clean(body.name, 80);
   const email = clean(body.email, 120).toLowerCase();
   const phone = normalizePhone(body.phone);
@@ -21,6 +24,7 @@ export const POST = handle(async (req) => {
   if (await User.exists({ phone })) return fail("An account with this mobile number already exists.", 409);
 
   const hash = await bcrypt.hash(password, 12);
-  await User.create({ name, email, phone, password: hash });
+  const user = await User.create({ name, email, phone, password: hash });
+  log.info("auth.signup", { userId: user._id.toString() });
   return ok({ ok: true }, { status: 201 });
 });

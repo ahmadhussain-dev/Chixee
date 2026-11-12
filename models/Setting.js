@@ -11,6 +11,9 @@ const SettingSchema = new Schema(
     jazzcashNumber: { type: String, default: "" },
     jazzcashTitle: { type: String, default: "" },
     acceptingOrders: { type: Boolean, default: true },
+    // Web Push keys, created automatically on first use when VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY aren't set.
+    vapidPublic: { type: String, default: "" },
+    vapidPrivate: { type: String, default: "", select: false },
     catalogSeeded: { type: Boolean, default: false }, // the starting menu has been copied into the database once
   },
   { timestamps: true }
